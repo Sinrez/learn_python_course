@@ -13,6 +13,5 @@ def dict1():
     weather['date'] = "27.05.2019"
     print(f'длина словаря {len(weather)}')
     
- 
 if __name__ == '__main__':
     dict1()
