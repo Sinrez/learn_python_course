@@ -23,7 +23,14 @@ def main():
     {'product': 'Xiaomi Mi11', 'items_sold': [317, 267, 290, 431, 211, 354, 276, 526, 141, 453, 510, 316]},
     {'product': 'Samsung Galaxy 21', 'items_sold': [343, 390, 238, 437, 214, 494, 441, 518, 212, 288, 272, 247]},]
     
-    
-    
+    sum_items = 0
+    for l in lst:
+          print(f"Cуммарное количество продаж для {l['product']}: {sum(l['items_sold'])}")
+          print(f"Cреднее количество продаж для {l['product']}: {round(sum(l['items_sold'])/len(l['items_sold']),2)}")
+          sum_items += sum(l['items_sold'])
+
+    print(f"Cуммарное количество продаж всех товаров: {sum_items}")
+    print(f"Cреднее количество продаж всех товаров {sum_items/len(lst)}")
+
 if __name__ == "__main__":
     main()
