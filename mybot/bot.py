@@ -1,6 +1,7 @@
 from telegram.ext import Updater,CommandHandler,MessageHandler, Filters
 import logging
 import settings
+import ephem
 #@le_py_bot
 
 logging.basicConfig(
