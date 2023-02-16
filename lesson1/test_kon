@@ -1,0 +1,3 @@
+list1 = ['Python']
+for index, element in enumerate(list1):
+        print(index, element)
