@@ -13,16 +13,25 @@ students = [
     {'first_name': 'Маша'},
     {'first_name': 'Петя'},
 ]
-dict_res = {}
-for s in students:
-    if dict_res.get(s['first_name'], None):
-        dict_res[s['first_name']] += 1
-    else:
-        dict_res[s['first_name']] = 1
-for k, v in dict_res.items():
-    print(f'{k}: {v}')
-print(10 * '*')
+# dict_res = {}
+# for s in students:
+#     if dict_res.get(s['first_name'], None):
+#         dict_res[s['first_name']] += 1
+#     else:
+#         dict_res[s['first_name']] = 1
+# for k, v in dict_res.items():
+#     print(f'{k}: {v}')
+# print(10 * '*')
 
+# оптимизированный вариант
+names: dict = {}
+for student in students:
+    name = student["first_name"]
+    names[name] = names.get(name, 0) + 1
+
+
+print(max(names, key=names.get))
+print(10 * '*')
 
 # Задание 2
 # Дан список учеников, нужно вывести самое часто повторящееся имя
