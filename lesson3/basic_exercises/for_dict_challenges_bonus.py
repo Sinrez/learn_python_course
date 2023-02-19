@@ -130,9 +130,8 @@ def popuclar_chains(log_inp):
                 print(f'Идентификатор: {k}, длина цепочки: {v}')
 
 if __name__ == "__main__":
-    # pprint(generate_chat_history())
     logs = generate_chat_history()
-    print(logs)
+    # print(logs)
     print(top_msg_user(logs))
     print(15*'*')
     print(top_answer_user(logs))
