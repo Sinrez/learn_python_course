@@ -13,6 +13,7 @@ from requests_html import HTMLSession
 import json
 
 
+
 session = HTMLSession()
 r = session.get('https://www.banki.ru/services/responses/list/?rate[]=1&rate[]=2')
 r.html.render()  
@@ -22,8 +23,13 @@ r.html.render()
 res = r.html.text
 i1 = res.find('"review": [ {') + 10
 i2 = res.rfind('} } } ] }') + 7
-# print(res)
-print(res[i1:i2])
+# res_2 = res[i1:i2].replace('[','').replace(']','').split('}, {')
+res_2 = res[i1:i2].replace('[','').replace(']','')
+print(json.loads(res_2))
+
+
+
+# print(res[i1:i2])
 # print(res)
 # soup = BeautifulSoup(res).find_all_next('review')
 # print(soup)
