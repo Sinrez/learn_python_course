@@ -20,8 +20,8 @@ r.html.render()
 # } } } ] } { "@context"
 # print(r.html.text)
 res = r.html.text
-i1 = res.find('"review": [ {')
-i2 = res.rfind('} } } ] }')
+i1 = res.find('"review": [ {') + 10
+i2 = res.rfind('} } } ] }') + 7
 # print(res)
 print(res[i1:i2])
 # print(res)
