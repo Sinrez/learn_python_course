@@ -10,6 +10,8 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 import os
 import json
+import html
+import lxml.html
 
 
 ua = UserAgent()
@@ -21,8 +23,15 @@ with open('res.txt','w') as fl:
     fl.write(resp.text)
 # print(resp.text)
 
-# soup = BeautifulSoup(resp)
-# print(soup)
+bs = BeautifulSoup(resp.text, 'html.parser')
+bs_res_1 = bs.find('script', type="application/ld+json")
+with open('bs.txt','w') as fl:
+    fl.write(bs_res_1.text)
+print(type(bs_res_1))
+print(json.loads(bs_res_1.text))
+# print(*bs_res_1.children)
+# for b in bs_res_1.children:
+#     print(b)
 
 
 #заготовка

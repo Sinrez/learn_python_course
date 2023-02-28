@@ -9,6 +9,7 @@
 /env
 /env_bottom
 /res.txt
+/bs.txt
 
 # Настройки и хранение секретных данных
 /.env
