@@ -58,9 +58,9 @@ def page_parser(url_page):
 
 
 if __name__ == '__main__':
-    url_test = 'https://www.banki.ru/services/responses/bank/response/10847043/'
-    # urls_parser(url_1)
-    # for url in url_from_parse:
-    #     print(page_parser(url))
-    print(page_parser(url_test))
+    # url_test = 'https://www.banki.ru/services/responses/bank/response/10847043/'
+    urls_parser(url_1)
+    for url in url_from_parse:
+        print(page_parser(url))
+    # print(page_parser(url_test))
 
