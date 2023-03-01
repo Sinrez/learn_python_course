@@ -7,8 +7,9 @@ import requests as req
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 from time import sleep
+import random
 import os
-
+from check_resource import check_url
 
 url_1 = 'https://www.banki.ru/services/responses/list/?rate[]=1&rate[]=2'
 url_max = 'https://www.banki.ru/services/responses/list/?page=1440&is_countable=on&rate[]=1&rate[]=2' # c начала 2022.
@@ -16,6 +17,7 @@ url_max = 'https://www.banki.ru/services/responses/list/?page=1440&is_countable=
 url_from_parse = []
 
 def urls_parser(url_in):
+    check_url(url_in)
     url_base_1 = 'https://www.banki.ru'
     ua = UserAgent()
     fake_ua = {'user-agent': ua.random}
@@ -28,7 +30,9 @@ def urls_parser(url_in):
         if '/services/responses/bank/response/' in href:
             url_from_parse.append(url_base_1+href)
 
+
 def page_parser(url_page):
+    check_url(url_page)
     ua = UserAgent()
     fake_ua = {'user-agent': ua.random}
 
@@ -62,5 +66,6 @@ if __name__ == '__main__':
     urls_parser(url_1)
     for url in url_from_parse:
         print(page_parser(url))
+        sleep(random.randint(1,3))
     # print(page_parser(url_test))
 
