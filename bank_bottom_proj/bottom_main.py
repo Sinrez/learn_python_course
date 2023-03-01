@@ -7,7 +7,7 @@ import requests as req
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 from time import sleep
-import random
+from random import randint
 import os
 from check_resource import check_url
 
@@ -66,6 +66,6 @@ if __name__ == '__main__':
     urls_parser(url_1)
     for url in url_from_parse:
         print(page_parser(url))
-        sleep(random.randint(1,3))
+        sleep(randint(1,3))
     # print(page_parser(url_test))
 
