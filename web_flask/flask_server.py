@@ -1,6 +1,7 @@
-from flask import Flask
+from flask import Flask, render_template
 from weather import weather_by_city
-from flask import render_template
+from bs_ex import get_python_news
+
 
 app = Flask(__name__)
 
@@ -13,7 +14,8 @@ def hello():
 def weather():
     title = 'Новостной сайт'
     weather = weather_by_city("Moscow,Russia")
-    return render_template('index.html', page_title=title, weather=weather)
+    news = get_python_news()
+    return render_template('index.html', page_title=title, weather=weather, news_list=news)
 
 if __name__=="__main__":
     app.run(debug=True)

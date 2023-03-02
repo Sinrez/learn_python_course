@@ -17,6 +17,10 @@
         <div class="row">
             <div class="col-8">
                 <h2>Новости</h2>
+                {% for news in news_list %}
+                <h3><a href="{{ news.url }}">{{ news.title }}</a></h3>
+                <hr />
+                {% endfor %}
             </div>
             <div class="col-4">
                 <h2>Прогноз погоды</h2>
