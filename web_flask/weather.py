@@ -10,8 +10,14 @@ def weather_by_city(city_name):
         "num_of_days": 1,
         "lang": "ru"
     }
-    result = requests.get(weather_url, params=params)
-    weather = result.json()
+    try:
+        result = requests.get(weather_url, params=params)
+        result.raise_for_status()
+        weather = result.json()
+    except(requests.RequestException, ValueError) as ex:
+        print(f'Сетевая ошибка {ex}')
+        return False
+    
     if 'data' in weather:
         if 'current_condition' in weather['data']:
             try:
