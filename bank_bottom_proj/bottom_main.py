@@ -20,24 +20,27 @@ categories = ['deposits','credits','creditcards','hypothec',
 url_from_parse = []
 
 def urls_parser(url_in,category=''):
-    check_url(url_in)
-    url_base_1 = 'https://www.banki.ru'
-    ua = UserAgent()
-    fake_ua = {'user-agent': ua.random}
     try:
-        resp = req.get(url=url_in,  headers=fake_ua)
-    except (req.RequestException, ValueError) as er_net:
-        return f'Сетевая ошибка: {er_net}' 
-    try:
-        bs = BeautifulSoup(resp.text, 'lxml')
-        bs_res_1 = bs.find_all('a', attrs={'class':"link-simple"})
-    except AttributeError as ar0:
-        return f'Произошла ошибка парсинга страниц отзыва: {ar0}'
-    for b in bs_res_1:
-        href = b.attrs.get("href")
-        if '/services/responses/bank/response/' in href:
-            url_from_parse.append(url_base_1+href)
-            sleep(randint(1,2))
+        check_url(url_in)
+        url_base_1 = 'https://www.banki.ru'
+        ua = UserAgent()
+        fake_ua = {'user-agent': ua.random}
+        try:
+            resp = req.get(url=url_in,  headers=fake_ua)
+        except (req.RequestException, ValueError) as er_net:
+            return f'Сетевая ошибка: {er_net}' 
+        try:
+            bs = BeautifulSoup(resp.text, 'lxml')
+            bs_res_1 = bs.find_all('a', attrs={'class':"link-simple"})
+        except AttributeError as ar0:
+            return f'Произошла ошибка парсинга страниц отзыва: {ar0}'
+        for b in bs_res_1:
+            href = b.attrs.get("href")
+            if '/services/responses/bank/response/' in href:
+                url_from_parse.append(url_base_1+href)
+                sleep(randint(1,2))
+    except Exception as ex0:
+        return f'Ошибка при переборе страниц: {ex0}'
 
 
 def page_parser(url_page, category=''):
