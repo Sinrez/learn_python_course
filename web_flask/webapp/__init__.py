@@ -66,4 +66,3 @@ def create_app():
             return 'Ты не админ!'
     
     return app
-
