@@ -4,12 +4,14 @@ from webapp.bs_ex import get_python_news
 from webapp.model import db, News, User
 from webapp.forms import LoginForm
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
+from flask_migrate import Migrate
 
 
 def create_app():
     app = Flask(__name__)
     app.config.from_pyfile('config.py')
     db.init_app(app)
+    migrate = Migrate(app, db)
 
     login_manager = LoginManager()
     login_manager.init_app(app)

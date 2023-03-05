@@ -1,6 +1,7 @@
 *.pyc
 *.egg-info
 *.db
+*.old
 
 # Если вы программируете на Mac
 .DS_Store
