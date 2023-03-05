@@ -1,0 +1,41 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">Новости Python</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="/">Главная</a>
+      </li>
+
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Искать</button>
+    </form>
+    <ul class="navbar-nav"> 
+        {% if current_user.is_authenticated %}
+          <li class="nav-item" >
+            <span class="nav-link">Привет, {{ current_user.username }}</span>
+          </li>
+          {% if current_user.is_admin %}
+            <li class="nav-item" >
+              <a class="nav-link" href="{{ url_for('admin.admin_index') }}">Админка</a>
+            </li>
+          {% endif %}
+          <li class="nav-item" >
+            <a class="nav-link" href="{{ url_for('user.logout') }}">Выйти</a>
+          </li>
+        {% else %}
+          <li class="nav-item" >
+            <a class="nav-link" href="{{ url_for('user.register') }}">Регистрация</a>
+          </li>
+          <li class="nav-item" >
+            <a class="nav-link" href="{{ url_for('user.login') }}">Войти</a>
+          </li>
+        {% endif %}
+    </ul>   
+  </div>
+</nav>

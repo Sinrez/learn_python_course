@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class='row'>
+        <div class='col-8'>
+            {% include('messages.html') %}
+            <h2>Новости</h2>
+            {% for news in news_list %}
+            <h3><a href="{{ url_for('news.single_news', news_id=news.id) }}">{{ news.title }}</a></h3>
+            <p>{{ news.published.strftime('%d.%m.%Y') }} | Комментарии: {{  news.comments_count()  }}</p>
+            <hr />
+            {% endfor %}
+        </div>
+        <div class='col-4'>
+            <h2>Прогноз погоды</h2>
+            {% if weather %}
+                Погода: {{ weather.temp_C }}, ощущается как {{ weather.FeelsLikeC }}
+            {% else %}
+                Сервис погоды временно недоступен
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

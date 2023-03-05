@@ -1,0 +1,35 @@
+*.pyc
+*.egg-info
+*.db
+
+# Если вы программируете на Mac
+.DS_Store
+../.DS_Store
+
+# Если вы пользуетесь виртуальными окружениями
+/env
+/env_web
+/res.txt
+/bs.txt
+
+# Настройки и хранение секретных данных
+/.env
+/.env_web
+settings.py
+*.log
+.vscode/
+.idea/
+env/
+.DS_Store
+__pycache__/
+api_key.py
+config.py
+webapp.db
+
+env/
+.vscode/
+__pycache__/
+*.bak
+*.dat
+*.dir
+migrations/
