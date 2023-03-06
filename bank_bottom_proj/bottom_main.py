@@ -1,6 +1,3 @@
-# https://www.banki.ru/services/responses/list/?rate[]=1&rate[]=2
-# https://www.banki.ru/services/responses/list/?page=2&is_countable=on&rate[]=1&rate[]=2
-# href="/services/responses/bank/response/
 # source env_bottom/bin/activate
 
 import requests as req
@@ -11,18 +8,51 @@ from random import randint
 import os
 from check_resource import check_url
 
-url_1 = 'https://www.banki.ru/services/responses/list/?rate[]=1&rate[]=2'
-url_max = 'https://www.banki.ru/services/responses/list/?page=1440&is_countable=on&rate[]=1&rate[]=2' # c начала 2022.
 
 categories = ['deposits','credits','creditcards','hypothec',
               'autocredits','remote','restructing','debitcards','transfers','other']
+# limit = 150
+# 1440 - c начала 22
+limit = 2 # !!!cтавим на период теста чтобы не дудосить!!!
+url_base_site = 'https://www.banki.ru'
 
-url_from_parse = []
 
-def urls_parser(url_in,category=''):
+def page_fliper(categor, limit):
+    for cat in categor:
+        #цикл перебора стартовой страницы форума для каждой категории
+        url_categor_today=f'https://www.banki.ru/services/responses/list/product/{cat}/?is_countable=on&rate[]=1&rate[]=2'
+        for url in urls_parser(url_categor_today,url_base_site):
+            # print(url)
+            #в этом месте добавить запись в бд
+            # print(page_parser(url, cat))
+            resp = page_parser(url, cat)
+            with open('res.txt','a') as fl:
+                    fl.write(str(resp))
+                    fl.write('*'*30)
+
+        # print('*'*30)
+        sleep(randint(1,2))
+
+    for cat in categor:
+        #цикл перебора следуюших страниц, так как есть параметр page= и с ним не вытащить ссылки из цикла выше
+        for l in range(1, limit+1):
+            url_categor_history = f'https://www.banki.ru/services/responses/list/product/{cat}/?page={l}&is_countable=on&rate[]=1&rate[]=2'
+            for url in urls_parser(url_categor_today,url_base_site):
+                if url:
+            # print(url)
+            #в этом месте добавить запись в бд
+                    # print(page_parser(url, cat))
+                    # print('*'*30)
+                    resp = page_parser(url, cat)
+                    with open('res.txt','a') as fl:
+                        fl.write(str(resp))
+                        fl.write('*'*30)
+            sleep(randint(1,2))
+
+def urls_parser(url_in, url_base_site):
+    url_from_parse = []
     try:
         check_url(url_in)
-        url_base_1 = 'https://www.banki.ru'
         ua = UserAgent()
         fake_ua = {'user-agent': ua.random}
         try:
@@ -37,8 +67,8 @@ def urls_parser(url_in,category=''):
         for b in bs_res_1:
             href = b.attrs.get("href")
             if '/services/responses/bank/response/' in href:
-                url_from_parse.append(url_base_1+href)
-                sleep(randint(1,2))
+                url_from_parse.append(url_base_site+href)
+        return url_from_parse
     except Exception as ex0:
         return f'Ошибка при переборе страниц: {ex0}'
 
@@ -77,11 +107,5 @@ def page_parser(url_page, category=''):
   
   
 if __name__ == '__main__':
-    url_test = 'https://www.banki.ru/services/responses/bank/response/10847043/'
-    url_test2 = 'https://www.banki.ru/services/responses/bank/response/10846553/'
-    # urls_parser(url_1)
-    # for url in url_from_parse:
-    #     print(page_parser(url))
-    #     sleep(randint(1,3))
-    print(page_parser(url_test2))
+    page_fliper(categories, limit)
 
