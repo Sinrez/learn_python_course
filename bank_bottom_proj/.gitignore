@@ -21,3 +21,7 @@ settings.py
 env/
 .DS_Store
 __pycache__/
+config.py
+__pycache__/
+.vscode/
+env/

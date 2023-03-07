@@ -1,3 +1,4 @@
+#!/bin/sh
 # source env_bottom/bin/activate
 
 import requests as req
@@ -7,6 +8,7 @@ from time import sleep
 from random import randint
 import os
 from check_resource import check_url
+from datetime import datetime 
 
 
 categories = ['deposits','credits','creditcards','hypothec',
@@ -94,9 +96,10 @@ def page_parser(url_page, category=''):
             #получаем полный отзыв
             response_full = bs2.find('div', class_='lb1789875 markdown-inside markdown-inside--list-type_circle-fill').text.strip()
             #получаем дату отзыва
-            response_date = bs2.find('span', class_='l10fac986').text.strip()
+            response_dt = bs2.find('span', class_='l10fac986').text.strip()
+            response_date = datetime.strptime(response_dt, '%d.%m.%Y %H:%M')
             #получаем город 
-            response_city = bs2.find('span', class_='l3a372298').text
+            response_city = int(bs2.find('span', class_='l3a372298').text)
             #получаем id отзыва
             id_url = url_page.split('/')[7]
         except AttributeError as ar:
