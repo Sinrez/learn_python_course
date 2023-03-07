@@ -1,0 +1,5 @@
+{
+    "python.analysis.extraPaths": [
+        "./bank_bottom_proj/webapp_bottom"
+    ]
+}

@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 class Feedback(db.Model):
-        id_url = db.Column(db.Integer,unique=True, primary_key=True)
+        id_url = db.Column(db.String,unique=True, primary_key=True)
         url_page = db.Column(db.String, unique=True, nullable=False)
         bank_name = db.Column(db.String, nullable=False)
         category = db.Column(db.String, nullable=False)
