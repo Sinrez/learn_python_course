@@ -25,5 +25,6 @@ config.py
 __pycache__/
 .vscode/
 env/
-migrations
 drafts
+vscode
+DS_Store

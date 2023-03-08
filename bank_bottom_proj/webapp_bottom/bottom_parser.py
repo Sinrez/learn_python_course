@@ -1,4 +1,3 @@
-#!/bin/sh
 # source env_bottom/bin/activate
 
 from bs4 import BeautifulSoup
@@ -23,12 +22,12 @@ def page_fliper():
                 check_url(url)
                 if url:
                     try:
-                        id_url, url_page, bank_name, category, short_feedback, response_date, response_city, response_full = page_parser(url, cat)
-                        save_response(id_url, url_page, bank_name, category, short_feedback, response_date, response_city, response_full)
-                        # save_response(*page_parser(url, cat))
+                        *result, = page_parser(url, cat)
+                        save_response(*result)
                     except TypeError as te:
-                        print(id_url, url_page, bank_name, category, short_feedback, response_date, response_city, response_full)
+                        print(result)
                         print(f'Ошибка: {te}')
+                        exit()
             sleep(randint(1,2))
             
 def urls_parser(url_in, url_base_site):
