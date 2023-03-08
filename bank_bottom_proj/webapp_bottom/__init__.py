@@ -15,7 +15,8 @@ def create_app():
     @app.route("/")
     def index():
         title = 'Дно банки'
-        return render_template('index.html', page_title=title)
+        news = Feedback.query.order_by(Feedback.response_date.desc()).all()
+        return render_template('index.html', page_title=title, news_list=news)
 
     
     return app

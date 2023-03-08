@@ -14,7 +14,7 @@
   <body>
     <div class="container">
     <h1>{{page_title}}</h1>
-        <!-- <div class="row">
+        <div class="row">
             <div class="col-8">
               {% with messages = get_flashed_messages() %}
               {% if messages %}
@@ -25,21 +25,21 @@
               </div>
               {% endif %}
           {% endwith %}              
-                <h2>Новости</h2>
+                <h2>Отзывы</h2>
                 {% for news in news_list %}
-                <h3><a href="{{ news.url }}">{{ news.title }}</a></h3>
-                <p>{{ news.published.strftime('%d.%m.%Y') }}</p>
+                <h3><a href="{{ news.url_page }}">{{ news.short_feedback }}</a></h3>
+                <p>{{ news.response_date.strftime('%d.%m.%Y') }}</p>
                 <hr />
                 {% endfor %}
             </div>
-            <div class="col-4">
+            <!-- <div class="col-4">
                 <h2>Прогноз погоды</h2>
                 {% if weather %}
                     Погода: {{ weather.temp_C }}, ощущается как {{ weather.FeelsLikeC }}
                 {% else %}
                     Сервис погоды временно недоступен
-                {% endif %}
-            </div> -->
+                {% endif %} -->
+            </div>
         </div>
 </div>
     <!-- Optional JavaScript -->
