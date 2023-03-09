@@ -25,3 +25,6 @@ config.py
 __pycache__/
 .vscode/
 env/
+drafts
+vscode
+DS_Store
