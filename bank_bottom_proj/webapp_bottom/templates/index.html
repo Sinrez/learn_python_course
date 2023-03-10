@@ -15,6 +15,17 @@
     <div class="container">
     <h1>{{page_title}}</h1>
     <body>
+      <head>
+        <meta charset="utf-8">
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+      </head>
+      <body>
+        <h2>Динамика погружения на дно за неделю</h2>
+        {{ plot_div|safe }}
+      </body>
+      <div>
+        <a href="http://127.0.0.1:5000/feedback">Читать все отзывы</a>
+      </div>
       <h2>Лидеры дна</h2>
       <table>
         <thead>
@@ -32,6 +43,7 @@
           {% endfor %}
         </tbody>
       </table>
+      <br>
     </body>
     </div>
     <!-- Optional JavaScript -->

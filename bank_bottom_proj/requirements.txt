@@ -18,3 +18,5 @@ urllib3==1.26.14
 Werkzeug==2.2.3
 WTForms==3.0.1
 flask-migrate==4.0.4
+bokeh==3.1.0
+plotly==5.13.1

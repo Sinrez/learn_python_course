@@ -23,16 +23,16 @@ def save_response(id_url, url_page, bank_name, category, short_feedback, respons
             db.session.add(new_feedback)
             db.session.commit()
 
-def page_fliper():
+def page_fliper(start=1, limit=3):
     categories = ['deposits','credits','creditcards','hypothec',
               'autocredits','remote','restructing','debitcards','transfers','other']
     # limit = 150
     #1440 - c начала 22
-    limit = 4 # !!!cтавим на период теста чтобы не дудосить!!!
+    # limit = 4 # !!!cтавим на период теста чтобы не дудосить!!!
     url_base_site = 'https://www.banki.ru'
     for cat in categories:
         #цикл перебора следуюших страниц, так как есть параметр page= и с ним не вытащить ссылки из цикла выше
-        for l in range(1, limit+1):
+        for l in range(start, limit+1):
             url_categor_history = f'https://www.banki.ru/services/responses/list/product/{cat}/?page={l}&is_countable=on&rate[]=1&rate[]=2'
             for url in urls_parser(url_categor_history,url_base_site):
                 check_url(url)
