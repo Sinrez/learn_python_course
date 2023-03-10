@@ -1,5 +1,5 @@
-from webapp_bottom.model import db, Feedback
-from webapp_bottom.check_resource import check_url
+from model import db, Feedback
+from check_resource import check_url
 import requests as req
 from fake_useragent import UserAgent
 

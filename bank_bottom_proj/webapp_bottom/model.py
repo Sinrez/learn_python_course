@@ -2,6 +2,8 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+# db.Model.query.group_by
+
 class Feedback(db.Model):
         id_url = db.Column(db.String,unique=True, primary_key=True)
         url_page = db.Column(db.String, unique=True, nullable=False)

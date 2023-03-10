@@ -3,9 +3,18 @@
 from bs4 import BeautifulSoup
 from time import sleep
 from random import randint
-from webapp_bottom.check_resource import check_url
+from check_resource import check_url
 from datetime import datetime
-from webapp_bottom.utils import save_response, get_url
+from utils import save_response, get_url
+from flask import Flask
+
+# def create_app():
+#     app = Flask(__name__)
+
+#     with app.app_context():
+#         db.init_app(app)
+
+#     return app
 
 def page_fliper():
     categories = ['deposits','credits','creditcards','hypothec',
