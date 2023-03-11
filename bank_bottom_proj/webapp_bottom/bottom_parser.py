@@ -3,20 +3,36 @@
 from bs4 import BeautifulSoup
 from time import sleep
 from random import randint
-from webapp_bottom.check_resource import check_url
+from check_resource import check_url
 from datetime import datetime
-from webapp_bottom.utils import save_response, get_url
+from utils import get_url
+from flask import Flask
+from model import db, Feedback
+from config import SQLALCHEMY_DATABASE_URI
 
-def page_fliper():
+def save_response(id_url, url_page, bank_name, category, short_feedback, response_date, response_city, response_full):
+    app = Flask(__name__)
+    app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
+    with app.app_context():
+        db.init_app(app)
+        url_exists = Feedback.query.filter(Feedback.url_page == url_page).count()
+        if not url_exists:
+            new_feedback = Feedback(id_url=id_url, url_page=url_page, bank_name=bank_name, category=category, 
+                                    short_feedback=short_feedback,response_date=response_date,response_city=response_city,
+                                    response_full=response_full)
+            db.session.add(new_feedback)
+            db.session.commit()
+
+def page_fliper(start=1, limit=3):
     categories = ['deposits','credits','creditcards','hypothec',
               'autocredits','remote','restructing','debitcards','transfers','other']
     # limit = 150
     #1440 - c начала 22
-    limit = 2 # !!!cтавим на период теста чтобы не дудосить!!!
+    # limit = 4 # !!!cтавим на период теста чтобы не дудосить!!!
     url_base_site = 'https://www.banki.ru'
     for cat in categories:
         #цикл перебора следуюших страниц, так как есть параметр page= и с ним не вытащить ссылки из цикла выше
-        for l in range(1, limit+1):
+        for l in range(start, limit+1):
             url_categor_history = f'https://www.banki.ru/services/responses/list/product/{cat}/?page={l}&is_countable=on&rate[]=1&rate[]=2'
             for url in urls_parser(url_categor_history,url_base_site):
                 check_url(url)
@@ -69,7 +85,10 @@ def page_parser(url_page, category=''):
         except Exception as ex:
             return f'Произошла ошибка в функции page_parser: {ex}'
         return id_url, url_page, bank_name, category, short_feedback, response_date, response_city, response_full
-  
+    
+
 if __name__ == '__main__':
     page_fliper()
+
+    
 

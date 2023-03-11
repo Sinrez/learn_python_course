@@ -1,17 +1,8 @@
-from webapp_bottom.model import db, Feedback
-from webapp_bottom.check_resource import check_url
+from model import db, Feedback
+from check_resource import check_url
 import requests as req
 from fake_useragent import UserAgent
 
-
-def save_response(id_url, url_page, bank_name, category, short_feedback, response_date, response_city, response_full):
-    url_exists = Feedback.query.filter(Feedback.url_page == url_page).count()
-    if not url_exists:
-        new_feedback = Feedback(id_url=id_url, url_page=url_page, bank_name=bank_name, category=category, 
-                                short_feedback=short_feedback,response_date=response_date,response_city=response_city,
-                                response_full=response_full)
-        db.session.add(new_feedback)
-        db.session.commit()
 
 def get_url(url_page):
     check_url(url_page)
