@@ -4,7 +4,7 @@ import requests as req
 from fake_useragent import UserAgent
 
 
-def get_url(url_page):
+def get_url(url_page:str):
     check_url(url_page)
     ua = UserAgent()
     fake_ua = {'user-agent': ua.random}
