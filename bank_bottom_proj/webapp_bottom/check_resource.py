@@ -2,7 +2,7 @@ import requests as req
 from urllib.error import HTTPError, URLError
 from fake_useragent import UserAgent
 
-def check_url(in_url) -> None:
+def check_url(in_url:str) -> None:
     """
     Функция отправляет запрос HEAD, чтобы определить, существует ли ресурс, не загружая его содержимое
     """

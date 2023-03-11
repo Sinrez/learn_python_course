@@ -10,7 +10,7 @@ from flask import Flask
 from model import db, Feedback
 from config import SQLALCHEMY_DATABASE_URI
 
-def save_response(id_url, url_page, bank_name, category, short_feedback, response_date, response_city, response_full):
+def save_response(id_url, url_page, bank_name, category, short_feedback, response_date, response_city, response_full) -> None:
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
     with app.app_context():
@@ -23,7 +23,7 @@ def save_response(id_url, url_page, bank_name, category, short_feedback, respons
             db.session.add(new_feedback)
             db.session.commit()
 
-def page_fliper(start=1, limit=3):
+def page_fliper(start: int = 1, limit: int = 3) -> None:
     categories = ['deposits','credits','creditcards','hypothec',
               'autocredits','remote','restructing','debitcards','transfers','other']
     # limit = 150
@@ -46,7 +46,7 @@ def page_fliper(start=1, limit=3):
                         exit()
             sleep(randint(1,2))
             
-def urls_parser(url_in, url_base_site):
+def urls_parser(url_in: str, url_base_site: str) -> list:
     url_from_parse = []
     resp = get_url(url_in)
     try:
@@ -62,7 +62,7 @@ def urls_parser(url_in, url_base_site):
     except Exception as ex0:
         return f'Ошибка при переборе страниц: {ex0}'
 
-def page_parser(url_page, category=''):
+def page_parser(url_page: str, category: str ='') -> tuple:
         try:
             resp_fe = get_url(url_page)
             bs2 = BeautifulSoup(resp_fe.text, 'html.parser')
