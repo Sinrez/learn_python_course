@@ -15,22 +15,17 @@
     <div class="container">
     <h1>{{page_title}}</h1>
     <body>
-      <head>
+      <h2>Лидеры дна по категориям
+        {% for cat, banks_list in banks_dict.items() %}
+        <br>
+        <h2>{{ cat }}</h2>
+        <head>
         <meta charset="utf-8">
         <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
       </head>
       <body>
-        <h2>Динамика погружения на дно за неделю</h2>
-        {{ plot_div|safe }}
+        {{ banks_list[1]|safe }}
       </body>
-      <div>
-        <a href="http://127.0.0.1:5000/feedback">Читать все отзывы</a>
-      </div>
-      <div>
-        <a href="http://127.0.0.1:5000/categories">Смотреть статистику по категориям</a>
-      </div>
-      <br> 
-      <h2>Лидеры дна</h2>
       <table>
         <thead>
           <tr>
@@ -39,7 +34,7 @@
           </tr>
         </thead>
         <tbody>
-          {% for ba in banks_list %}
+          {% for ba in banks_list[0] %}
           <tr>
             <td>{{ ba[0] }}</td>
             <td style="text-align: center;">{{ ba[1] }}</td >
@@ -47,6 +42,7 @@
           {% endfor %}
         </tbody>
       </table>
+      {% endfor %}
       <br>
     </body>
     </div>
