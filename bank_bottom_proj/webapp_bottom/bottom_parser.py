@@ -23,7 +23,7 @@ def save_response(id_url, url_page, bank_name, category, short_feedback, respons
             db.session.add(new_feedback)
             db.session.commit()
 
-def page_fliper(categories: list = categories, start: int = 1, limit: int = 3) -> None:
+def page_fliper(categories: list = categories, start: int = 1, limit: int = 4) -> None:
     # limit = 150
     #1440 - c начала 22
     # limit = 4 # !!!cтавим на период теста чтобы не дудосить!!!
