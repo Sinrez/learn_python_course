@@ -4,6 +4,9 @@
 # curl -i http://localhost:5000/todo/api/v1.0/tasks
 # curl -i -H "Content-Type: application/json" -X POST -d '{"title":"Read a book"}' http://localhost:5000/todo/api/v1.0/tasks
 
+"""
+Работа с примерами из https://habr.com/ru/post/246699/
+"""
 
 from flask import Flask, jsonify, abort, request, url_for, make_response
 # from flask.ext.httpauth import HTTPBasicAuth
@@ -30,10 +33,6 @@ def bad_request(error):
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify( { 'error': 'Not found' } ), 404)
-
-"""
-Работа с примерами из https://habr.com/ru/post/246699/
-"""
 
 tasks = [
     {
