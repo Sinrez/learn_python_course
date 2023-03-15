@@ -25,7 +25,7 @@ def page_fliper(categor):
                             print(result)
                             print(f'Ошибка: {te}')
                             exit()
-                sleep(randint(2,3))
+                sleep(randint(4,5))
     except Exception as ex:
          return f'Ошибка в модуде перебора страниц {ex}'
                  
@@ -43,7 +43,7 @@ def url_parser(url_in, url_base_site):
                 matchh = re.search(r"^(/bank/)[a-z]*/otzyvy/[0-9]*/", a['href'])
                 if matchh is not None and matchh not in res_url:
                     res_url.append(url_base_site+matchh[0])
-        sleep(randint(2,3))
+        sleep(randint(3,4))
         return set(res_url) # для исключения дублей
     except Exception as ex2:
          return f'Ошибка в модуде отбора ссылок отзывов {ex2}'

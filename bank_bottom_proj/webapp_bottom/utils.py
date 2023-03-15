@@ -10,7 +10,8 @@ from config import SQLALCHEMY_DATABASE_URI
 def get_url(url_page:str):
     check_url(url_page)
     ua = UserAgent()
-    fake_ua = {'User-Agent': UserAgent().chrome}
+    fake_ua = {'User-Agent': UserAgent().chrome,
+               'Referer': 'https://www.ya.ru/'}
     if 'sravni' in url_page:
         try:
                 resp_for_cookeis = req.get("https://www.sravni.ru/")
