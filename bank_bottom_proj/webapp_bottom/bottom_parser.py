@@ -5,23 +5,8 @@ from time import sleep
 from random import randint
 from check_resource import check_url
 from datetime import datetime
-from utils import get_url
-from flask import Flask
-from model import db, Feedback
-from config import SQLALCHEMY_DATABASE_URI, categories
-
-def save_response(id_url, url_page, bank_name, category, short_feedback, response_date, response_city, response_full) -> None:
-    app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
-    with app.app_context():
-        db.init_app(app)
-        url_exists = Feedback.query.filter(Feedback.url_page == url_page).count()
-        if not url_exists:
-            new_feedback = Feedback(id_url=id_url, url_page=url_page, bank_name=bank_name, category=category, 
-                                    short_feedback=short_feedback,response_date=response_date,response_city=response_city,
-                                    response_full=response_full)
-            db.session.add(new_feedback)
-            db.session.commit()
+from utils import get_url, save_response
+from config import categories
 
 def page_fliper(categories: list = categories, start: int = 1, limit: int = 4) -> None:
     # limit = 150

@@ -16,12 +16,13 @@ def create_app():
     db.init_app(app)
     migrate = Migrate(app, db)
 
-    def get_count_from_db(days=7, cat = ''):
+    def get_count_from_db(days=10, cat = ''):
         delta = datetime.timedelta(days)
         now_day = datetime.date.today()
         delta_days = now_day - delta
         date_obj = datetime.datetime.strptime(str(delta_days), '%Y-%m-%d')
         formatted_date_str = date_obj.strftime('%d.%m.%Y')
+        # в зависимости наличия катеогории или возвращаем все отзывы или по категориям
         if not cat:
             qr = db.session.query(Feedback.bank_name,db.func.count(Feedback.url_page)).filter(Feedback.response_date >= formatted_date_str).group_by(Feedback.bank_name).having(db.func.count(Feedback.url_page) > 10).order_by(db.func.count(Feedback.url_page).desc()).all()
             return qr
@@ -63,6 +64,7 @@ def create_app():
         bank_dict = {}
         title = 'Дно банки'
         for cat in categories:
+            # важно: cat=cat передаем для отбора по категориям
             qr = get_count_from_db(cat = cat)
             df = pd.DataFrame(qr, columns=['bank', 'feedback'])
             fig = go.Figure(data=[go.Bar(x=df['bank'], y=df['feedback'])])
