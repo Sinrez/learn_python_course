@@ -9,6 +9,7 @@ def check_url(in_url:str) -> None:
     ua = UserAgent()
     fake_ua = {'user-agent': ua.random}
     try:
+        # resp_for_cookeis = req.get(in_url)
         r = req.head(in_url, allow_redirects=True, headers=fake_ua)
         if r.status_code != 200:
             print(f'Запрошенный ресурс недоступен, код: {r.status_code}')
