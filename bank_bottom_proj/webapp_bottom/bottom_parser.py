@@ -7,12 +7,15 @@ from check_resource import check_url
 from datetime import datetime
 from utils import get_url, save_response
 from config import categories
+from check_resource import check_url
+
 
 def page_fliper(categories: list = categories, start: int = 1, limit: int = 4) -> None:
     # limit = 150
     #1440 - c начала 22
     # limit = 4 # !!!cтавим на период теста чтобы не дудосить!!!
     url_base_site = 'https://www.banki.ru'
+    check_url(url_base_site)
     for cat in categories:
         #цикл перебора следуюших страниц, так как есть параметр page= и с ним не вытащить ссылки из цикла выше
         for l in range(start, limit+1):

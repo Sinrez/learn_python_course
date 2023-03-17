@@ -1,15 +1,16 @@
 import requests as req
 from urllib.error import HTTPError, URLError
 from fake_useragent import UserAgent
+UserAgent().chrome
 
 def check_url(in_url:str) -> None:
     """
     Функция отправляет запрос HEAD, чтобы определить, существует ли ресурс, не загружая его содержимое
     """
     ua = UserAgent()
-    fake_ua = {'user-agent': ua.random}
+    fake_ua = {'User-Agent': UserAgent().chrome,
+               'Referer': 'https://www.ya.ru/'}
     try:
-        # resp_for_cookeis = req.get(in_url)
         r = req.head(in_url, allow_redirects=True, headers=fake_ua)
         if r.status_code != 200:
             print(f'Запрошенный ресурс недоступен, код: {r.status_code}')

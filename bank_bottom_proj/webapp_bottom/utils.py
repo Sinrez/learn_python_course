@@ -1,4 +1,3 @@
-from check_resource import check_url
 import requests as req
 from fake_useragent import UserAgent
 UserAgent().chrome
@@ -8,7 +7,6 @@ from config import SQLALCHEMY_DATABASE_URI
 
 
 def get_url(url_page:str):
-    check_url(url_page)
     ua = UserAgent()
     fake_ua = {'User-Agent': UserAgent().chrome,
                'Referer': 'https://www.ya.ru/'}

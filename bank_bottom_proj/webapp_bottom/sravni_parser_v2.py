@@ -3,32 +3,14 @@
 from bs4 import BeautifulSoup
 from time import sleep
 from random import randint
-# from check_resource import check_url
 from datetime import datetime
 from utils import get_url, save_response
 import re
 import locale
 locale.setlocale(locale.LC_TIME, 'ru_RU.UTF-8')
 from config import sravni_categories
+from check_resource import check_url
 
-def page_fliper(categor):
-    try:
-        url_base_site = 'https://www.sravni.ru'
-        for cat in categor:
-            url_base = f'https://www.sravni.ru/banki/otzyvy/?tag={cat}&rated=one&rated=two&rated=three'
-            for url in url_parser(url_base, url_base_site):
-                if url:
-                        try:
-                            *result, = page_parser(url, cat)
-                            save_response(*result)
-                        except TypeError as te:
-                            print(result)
-                            print(f'Ошибка: {te}')
-                            exit()
-                sleep(randint(4,5))
-    except Exception as ex:
-         return f'Ошибка в модуде перебора страниц {ex}'
-                 
 def url_parser(url_in, url_base_site):
     # AttributeError - сайт через раз кидает 403
     try:
@@ -43,7 +25,6 @@ def url_parser(url_in, url_base_site):
                 matchh = re.search(r"^(/bank/)[a-z]*/otzyvy/[0-9]*/", a['href'])
                 if matchh is not None and matchh not in res_url:
                     res_url.append(url_base_site+matchh[0])
-        sleep(randint(3,4))
         return set(res_url) # для исключения дублей
     except Exception as ex2:
          return f'Ошибка в модуде отбора ссылок отзывов {ex2}'
@@ -86,5 +67,33 @@ def page_parser(url_page: str, categor: str =''):
         return f'Ошибка в модуде парсинга страницы {ex3}'
     return id_url, url_page, bank_name, categor_format, short_feedback, response_date, response_city, response_full
     
+
+def page_fliper(categor):
+        res_url = {}
+        url_base_site = 'https://www.sravni.ru'
+        check_url(url_base_site)
+        for cat in categor:
+            url_base = f'https://www.sravni.ru/banki/otzyvy/?tag={cat}&rated=one&rated=two&rated=three'
+            url_from_parse = (url_parser(url_base, url_base_site))
+            if isinstance(url_from_parse, set) and len(url_from_parse) > 0:
+                res_url[cat] = url_from_parse
+            sleep(randint(2,3))
+        
+        for cat, urls in res_url.items():
+                for url in urls:
+                    if url:
+                        try:
+                            *result, = page_parser(url, cat)
+                            if len(result) == 8:
+                                 save_response(*result)
+                            else:
+                                 print(result)
+                        except TypeError as te:
+                            print(*result)
+                            print(f'Ошибка: {te}')
+                            exit()                 
+                sleep(randint(2,3))
+
+
 if __name__ == '__main__':
     page_fliper(sravni_categories)
