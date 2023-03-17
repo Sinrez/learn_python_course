@@ -78,10 +78,8 @@ def page_fliper(categor):
             if isinstance(url_from_parse, set) and len(url_from_parse) > 0:
                 res_url[cat] = url_from_parse
             sleep(randint(2,3))
-        
         for cat, urls in res_url.items():
                 for url in urls:
-                    if url:
                         try:
                             *result, = page_parser(url, cat)
                             if len(result) == 8:
@@ -93,7 +91,6 @@ def page_fliper(categor):
                             print(f'Ошибка: {te}')
                             exit()                 
                 sleep(randint(2,3))
-
 
 if __name__ == '__main__':
     page_fliper(sravni_categories)
