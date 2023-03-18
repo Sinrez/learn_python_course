@@ -9,7 +9,7 @@ from get_banks import get_weekly_bottom, get_all_categories_week
 msg = 'Я - бот "Дно банки" показываю какие банки 🏦 на этой неделе пробили дно отрицательных отзывов 💩. Жмите кнопки для просмотра статистики:'
 
 keyb = [
-    [KeyboardButton('Узнать антирейтинг лидеров недели'), KeyboardButton('Узнать рейтинг по категориям')]
+    [KeyboardButton('Узнать антирейтинг лидеров недели'), KeyboardButton('Узнать антирейтинг по категориям')]
 ]
 
 logging.basicConfig(
@@ -39,8 +39,13 @@ def button1_handler(update, context):
     
 def button2_handler(update, context):
     dictionary = get_all_categories_week()
-    result = '\n'.join([f'{key}: {value}' for key, value in dictionary.items()])
-    update.message.reply_text(str(result))
+    categories_info = ""
+    for category, val in dictionary.items():
+        result = '\n'.join([f'{key}: {value}' for key, value in val.items()])
+        categories_info += f"{category}:\n{result}\n"
+        categories_info += "\n"
+    update.message.reply_text(categories_info)
+    
 
 # Функция, которая соединяется с платформой Telegram, "тело" нашего бота
 def main():
