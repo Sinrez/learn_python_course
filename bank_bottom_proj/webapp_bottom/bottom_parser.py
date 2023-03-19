@@ -27,7 +27,7 @@ def page_fliper(categories: list = categories, start: int = 1, limit: int = 4) -
                         *result, = page_parser(url, cat)
                         save_response(*result)
                     except TypeError as te:
-                        print(result)
+                        print(''.join(result))
                         print(f'Ошибка: {te}')
                         exit()
             sleep(randint(1,2))
