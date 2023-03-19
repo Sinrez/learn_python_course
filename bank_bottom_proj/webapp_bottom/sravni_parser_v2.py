@@ -17,9 +17,9 @@ def url_parser(url_in, url_base_site):
         res_url = []
         resp = get_url(url_in)
         try:
-            bs2 = BeautifulSoup(resp.text, 'html.parser')
+            bs2 = BeautifulSoup(resp.text, 'lxml')
         except AttributeError as ar0:
-            return f'Ошибка {ar0}, когда {resp.text}'
+            return f'Ошибка {ar0}, когда {resp.text} для {url_in} в основных ссылках'
         for a in bs2.find_all('a', href=True):
                 # href=True в данном случае вытащить вообще все ссылки
                 matchh = re.search(r"^(/bank/)[a-z]*/otzyvy/[0-9]*/", a['href'])
@@ -34,15 +34,15 @@ def page_parser(url_page: str, categor: str =''):
         # AttributeError - хитрожопыйсайт через раз кидает 403 или не возвращает ответ, запустить еще раз
         resp = get_url(url_page)
         try:
-            bs2 = BeautifulSoup(resp.text, 'html.parser')
+            bs2 = BeautifulSoup(resp.text, 'lxml')
         except AttributeError as ar1:
-            return f'Ошибка {ar1}, когда {resp.text}'        
-        #получаем краткий отзыв - название отзыва
+            return f'Ошибка1 {ar1}, когда {resp} для {url_page}'        
+        #получаем краткий отзыв
         try:
             sh = bs2.find('div', class_ = "review-card_title__zYdxx articleTypography_article-h3__wuxLw")
             short_feedback = sh.text.strip()
         except AttributeError as ar2:
-            return f'Ошибка {ar2}, когда {sh}' 
+            return f'Ошибка2 {ar2}, когда {sh} для {url_page}' 
         # получаем категорию на рус > берем класс на уровень выше
         # categ_rus = bs2.find('div', class_ ='_1n8o0h2 _vea58f _52n9a4').text.strip()
         # #получаем название банка 
@@ -77,20 +77,23 @@ def page_fliper(categor):
             url_from_parse = (url_parser(url_base, url_base_site))
             if isinstance(url_from_parse, set) and len(url_from_parse) > 0:
                 res_url[cat] = url_from_parse
-            sleep(randint(2,3))
+            sleep(randint(3,4))
+        print(res_url)
+        sleep(randint(4,5))
         for cat, urls in res_url.items():
                 for url in urls:
                         try:
                             *result, = page_parser(url, cat)
+                            # print(result)
                             if len(result) == 8:
                                  save_response(*result)
                             else:
-                                 print(result)
+                                 print(''.join(result))
                         except TypeError as te:
-                            print(*result)
+                            print(''.join(result))
                             print(f'Ошибка: {te}')
                             exit()                 
-                sleep(randint(2,3))
+                sleep(randint(3,4))
 
 if __name__ == '__main__':
     page_fliper(sravni_categories)
