@@ -54,22 +54,24 @@ import json
 # print("Done")
 
 # req
-# ua = UserAgent()
-# fake_ua = {'user-agent': ua.random} headers=fake_ua
+ua = UserAgent()
+fake_ua = {'user-agent': ua.random}
+print(fake_ua)
 
-url_in = 'https://www.banki.ru/services/responses/list/?rate[]=1&rate[]=2'
-resp = re.get(url=url_in)
-with open('res.txt','w') as fl:
-    fl.write(resp.text)
-# print(resp.text)
+# url_in = 'https://www.banki.ru/services/responses/list/?rate[]=1&rate[]=2'
+# resp = re.get(url=url_in)
+# with open('res.txt','w') as fl:
+#     fl.write(resp.text)
+# # print(resp.text)
 
 # soup = BeautifulSoup(resp)
 # print(soup)
 
+# Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36
 
 #заготовка
-def parser():
-    url_base_1 = 'https://www.banki.ru'
+# def parser():
+#     url_base_1 = 'https://www.banki.ru'
 
-if __name__ == '__main__':
-    pass
+# if __name__ == '__main__':
+#     pass
