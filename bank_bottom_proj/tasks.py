@@ -28,8 +28,8 @@ def banki_content():
 
 @celery_app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
-    sender.add_periodic_task(crontab(minute='*/1'), page_fliper().s())
-    # sender.add_periodic_task(crontab(minute='*/10'), bottom_parser.page_fliper().s())
+    sender.add_periodic_task(crontab(minute='*/1'), page_fliper.s())
+    # sender.add_periodic_task(crontab(minute='*/10'), page_fliper.s())
     # 10 мин чтобы не дудосить
     # для запуска по пятницам в 16:30
-    # sender.add_periodic_task( crontab(hour=16, minute=30, day_of_week=5), bottom_parser.page_fliper().s())
+    # sender.add_periodic_task( crontab(hour=16, minute=30, day_of_week=5), bottom_parser.page_fliper.s())
