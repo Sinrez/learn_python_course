@@ -12,8 +12,10 @@ sys.path.append('/Volumes/D/learn_python_course/bank_bottom_proj')
 sys.path.append('/Volumes/D/learn_python_course/bank_bottom_proj/webapp_bottom')
 
 from celery import Celery
-from webapp_bottom import create_app, bottom_parser
+from webapp_bottom import create_app
 from celery.schedules import crontab
+from webapp_bottom.bottom_parser import page_fliper
+
 
 flask_app = create_app()
 celery_app = Celery('tasks', broker='redis://localhost:6379/0')
@@ -22,11 +24,12 @@ celery_app = Celery('tasks', broker='redis://localhost:6379/0')
 @celery_app.task
 def banki_content():
     with flask_app.app_context():
-        bottom_parser()
+        page_fliper()
 
 @celery_app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
-    sender.add_periodic_task(crontab(minute='*/10'), bottom_parser.s())
+    sender.add_periodic_task(crontab(minute='*/1'), page_fliper().s())
+    # sender.add_periodic_task(crontab(minute='*/10'), bottom_parser.page_fliper().s())
     # 10 мин чтобы не дудосить
     # для запуска по пятницам в 16:30
-    # sender.add_periodic_task( crontab(hour=16, minute=30, day_of_week=5), bottom_parser.s())
+    # sender.add_periodic_task( crontab(hour=16, minute=30, day_of_week=5), bottom_parser.page_fliper().s())
