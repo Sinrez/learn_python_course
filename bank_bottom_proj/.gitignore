@@ -30,3 +30,5 @@ vscode
 DS_Store
 bottom.db
 bottom
+celerybeat-schedule.db
+celerybeat-schedule

@@ -1,14 +1,19 @@
 # source env_bottom/bin/activate
 
+import sys
+
+#это локальные костыли для доступности вспомогательных файлов, добавлять перед импортом основных библиотек
+sys.path.append('..') 
+sys.path.append('/Volumes/D/learn_python_course/bank_bottom_proj/webapp_bottom') 
+sys.path.append('bank_bottom_proj/webapp_bottom')
+
 from bs4 import BeautifulSoup
 from time import sleep
 from random import randint
-from check_resource import check_url
 from datetime import datetime
 from utils import get_url, save_response
 from config import categories
 from check_resource import check_url
-
 
 def page_fliper(categories: list = categories, start: int = 1, limit: int = 4) -> None:
     # limit = 150

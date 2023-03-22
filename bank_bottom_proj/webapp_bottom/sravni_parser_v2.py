@@ -93,7 +93,13 @@ def page_fliper(categor):
                             print(''.join(result))
                             print(f'Ошибка: {te}')
                             exit()                 
+                        sleep(randint(3,4))
                 sleep(randint(3,4))
 
 if __name__ == '__main__':
-    page_fliper(sravni_categories)
+    i = 10
+    while i >=0:
+        page_fliper(sravni_categories)
+        sleep(randint(3,4))
+        i -= 1
+
