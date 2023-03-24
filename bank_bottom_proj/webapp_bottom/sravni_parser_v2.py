@@ -54,9 +54,13 @@ def page_parser(url_page: str, categor: str =''):
             response_dt = bs2.find('div', class_ ='_1n8o0h2 _vea58f _pbfp49').find('div',class_='h-color-D30 _1h41p0x').text.strip()
             response_date = datetime.strptime(response_dt, '%d %B %Y')
         except ValueError as ve:
-            current_year = str(datetime.now().year)
-            response_dt_in = response_dt+' '+current_year
-            response_date = datetime.strptime(response_dt_in, '%d %B %Y')
+            #сайт не следит за форматом даты, тут обрабатываем случай, когда вместо даты указано только время вида hh:mm
+            if ':' in response_dt:
+                 response_date = datetime.now()
+            else:
+                current_year = str(datetime.now().year)
+                response_dt_in = response_dt+' '+current_year
+                response_date = datetime.strptime(response_dt_in, '%d %B %Y')
         # #получаем город  
         response_city = bs2.find('div', class_ ='h-color-D30 h-ml-8 _1h41p0x _1gpt55s').text.strip()
         # #получаем id отзыва - 00 чтобы исключить совпадений с id отзывов из других ресурсов
@@ -73,7 +77,7 @@ def page_fliper(categor):
         url_base_site = 'https://www.sravni.ru'
         check_url(url_base_site)
         for cat in categor:
-            url_base = f'https://www.sravni.ru/banki/otzyvy/?tag={cat}&rated=one&rated=two&rated=three'
+            url_base = f'https://www.sravni.ru/banki/otzyvy/?tag={cat}&rated=one&rated=two'
             url_from_parse = (url_parser(url_base, url_base_site))
             if isinstance(url_from_parse, set) and len(url_from_parse) > 0:
                 res_url[cat] = url_from_parse
@@ -99,7 +103,10 @@ def page_fliper(categor):
 if __name__ == '__main__':
     i = 10
     while i >=0:
+        print(f'Попытка {11-i}')
+        print('+'*20)
         page_fliper(sravni_categories)
+        print('+'*20)
         sleep(randint(3,4))
         i -= 1
 
