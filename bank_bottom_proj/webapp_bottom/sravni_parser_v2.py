@@ -55,7 +55,8 @@ def page_parser(url_page: str, categor: str =''):
             response_date = datetime.strptime(response_dt, '%d %B %Y')
         except ValueError as ve:
             #сайт не следит за форматом даты, тут обрабатываем случай, когда вместо даты указано только время вида hh:mm
-            if ':' in response_dt:
+            # <6 чтоб не проскочили даты вида dd:mm:yy, только dd:mm
+            if ':' in response_dt and len(response_dt) < 6:
                  response_date = datetime.now()
             else:
                 current_year = str(datetime.now().year)
