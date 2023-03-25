@@ -50,16 +50,16 @@ def button2_handler(update, context):
 # Функция, которая соединяется с платформой Telegram, "тело" нашего бота
 def main():
     try:
-        mybot = Updater(settings.TOKEN, use_context=True)
+        mybot1 = Updater(settings.TOKEN, use_context=True)
 
-        dp = mybot.dispatcher
+        dp = mybot1.dispatcher
         dp.add_handler(CommandHandler("start", start_handler))
         dp.add_handler(MessageHandler(Filters.regex('Узнать антирейтинг лидеров недели'), button1_handler))
-        dp.add_handler(MessageHandler(Filters.regex('Узнать рейтинг по категориям'), button2_handler))
+        dp.add_handler(MessageHandler(Filters.regex('Узнать антирейтинг по категориям'), button2_handler))
 
         logging.info('Бот стартовал!')
-        mybot.start_polling()
-        mybot.idle()
+        mybot1.start_polling()
+        mybot1.idle()
     except Exception as ex:
         logging.info(f'Ошибка в функции main: {ex}')
         print(f'Ошибка в функции main: {ex}')
