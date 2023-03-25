@@ -3,7 +3,7 @@
 import requests as re
 
 url_all_week = 'http://localhost:5000//bottom/api/v1.0/weeklyfeedback'
-url_all_categories_week = 'http://localhost:5000//bottom/api/v1.0/weeklyfeedback/category'
+url_all_categories_week = 'http://127.0.0.1:5000//bottom/api/v1.0/weeklyfeedback/category'
 
 def get_weekly_bottom(url=url_all_week):
     sorted_dict = {}
