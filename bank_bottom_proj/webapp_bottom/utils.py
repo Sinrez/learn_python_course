@@ -4,7 +4,7 @@ UserAgent().chrome
 from flask import Flask
 from model import db, Feedback
 from config import SQLALCHEMY_DATABASE_URI
-
+import hashlib
 
 def get_url(url_page:str):
     ua = UserAgent()
@@ -39,3 +39,13 @@ def save_response(id_url, url_page, bank_name, category, short_feedback, respons
                                     response_full=response_full)
             db.session.add(new_feedback)
             db.session.commit()
+
+
+def generate_short_id_url(feedb):
+    # Получаем хэш от URL с использованием sha256
+    hash_object = hashlib.sha256(feedb.encode())
+    hex_dig = hash_object.hexdigest()
+
+    # Оставляем только первые 8 символов хэша и возвращаем его
+    short_hash = hex_dig[:8]
+    return short_hash

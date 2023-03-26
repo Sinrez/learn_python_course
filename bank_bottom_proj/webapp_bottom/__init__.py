@@ -1,14 +1,23 @@
 # ./run.sh
 # source env_bottom/bin/activate
 # export FLASK_APP=webapp_bottom && flask db init
+import sys
 
-from flask import Flask, render_template, jsonify
+#это локальные костыли для доступности вспомогательных файлов, добавлять перед импортом основных библиотек
+sys.path.append('..') 
+sys.path.append('/Volumes/D/learn_python_course/bank_bottom_proj/webapp_bottom') 
+sys.path.append('bank_bottom_proj/webapp_bottom')
+
+
+from flask import Flask, render_template, jsonify, request
 from webapp_bottom.model  import db, Feedback
 from flask_migrate import Migrate
 import datetime
 import pandas as pd
 import plotly.graph_objs as go
 from webapp_bottom.config import categories
+from utils import generate_short_id_url,save_response
+
 
 def create_app():
     app = Flask(__name__)
@@ -71,5 +80,26 @@ def create_app():
             plot_div = fig.to_html(full_html=False)            
             bank_dict[cat] = [qr,plot_div]
         return render_template('categories.html', page_title=title, banks_dict=bank_dict)
+    
+    @app.route('/post_feedback')
+    def post_feedback():
+        title = 'Дно банки'
+        return render_template('post_feedback.html', page_title=title)
+    
+    @app.route('/submit', methods=['POST'])
+    def submit():
+        bank = request.form['bank']
+        theme = request.form['theme']
+        category = request.form['category']
+        review = request.form['review']
+        city = request.form['city']
+        id_url_in = generate_short_id_url(review)
+        url_page_in = '/'+ id_url_in
+        response_date_in = datetime.datetime.now()
+        # здесь  обрабатывать отправленные данные, сохранять их в базе данных.
+        save_response(id_url_in, url_page_in, bank, category, theme, response_date_in, city, review)
+        print(f'Отзыв добавлен {url_page_in}, {review}')
+
+        return "Отзыв отправлен!"
     
     return app 
