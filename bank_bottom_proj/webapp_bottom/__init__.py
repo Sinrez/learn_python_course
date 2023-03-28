@@ -69,6 +69,14 @@ def create_app():
         news = Feedback.query.order_by(Feedback.response_date.desc()).all()
         return render_template('feedback.html', page_title=title, news_list=news)
     
+    @app.route("/<url>")
+    def get_local_feedback(url):
+        title = 'Дно банки'
+        news = Feedback.query.filter_by(url_page='/'+url).all()
+        print(news)
+        return render_template('local_feedback.html', page_title=title, news_list=news)
+
+
     @app.route("/categories")
     def get_categories(categories: list = categories):
         bank_dict = {}
