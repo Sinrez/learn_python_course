@@ -64,7 +64,11 @@ def main():
         dp.add_handler(MessageHandler(Filters.regex('Узнать антирейтинг лидеров недели'), button1_handler))
         dp.add_handler(MessageHandler(Filters.regex('Узнать антирейтинг по категориям'), button2_handler))
         # Задаем расписание для отправки сообщений
-        job_queue.run_daily(send_weekly_bottom, time=datetime.time(hour=13, minute=0, second=0))
+        weekly_time = datetime.time(hour=13, minute=0, second=0)
+        weekday = 4 # Пятница
+        # Запускаем задачу на повторение еженедельно
+        #параметр interval установлен на 604800 секунд, что соответствует одной неделе (60 секунд × 60 минут × 24 часа × 7 дней)
+        job_queue.run_repeating(send_weekly_bottom, interval=604800, first=weekly_time, context=weekday)
 
         logging.info('Бот стартовал!')
         mybot1.start_polling()
