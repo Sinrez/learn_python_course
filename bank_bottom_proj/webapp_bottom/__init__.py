@@ -72,8 +72,9 @@ def create_app():
     @app.route("/<url>")
     def get_local_feedback(url):
         title = 'Дно банки'
-        news = Feedback.query.filter_by(url_page='/'+url).all()
+        news = Feedback.query.filter_by(url_page='/'+url).first()
         print(news)
+        print(type(news))
         return render_template('local_feedback.html', page_title=title, news_list=news)
 
 
