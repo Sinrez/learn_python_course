@@ -1,14 +1,24 @@
 # ./run.sh
 # source env_bottom/bin/activate
 # export FLASK_APP=webapp_bottom && flask db init
+import sys
 
-from flask import Flask, render_template, jsonify
+#это локальные костыли для доступности вспомогательных файлов, добавлять перед импортом основных библиотек
+sys.path.append('..') 
+sys.path.append('/Volumes/D/learn_python_course/bank_bottom_proj/webapp_bottom') 
+sys.path.append('bank_bottom_proj/webapp_bottom')
+
+from flask import Flask, render_template, jsonify, request
 from webapp_bottom.model  import db, Feedback
 from flask_migrate import Migrate
 import datetime
 import pandas as pd
 import plotly.graph_objs as go
 from webapp_bottom.config import categories
+from utils import generate_short_id_resource ,save_response
+from wtforms.validators import DataRequired, Length, ValidationError
+from flask_wtf import FlaskForm, csrf
+from wtforms import StringField, SubmitField
 
 def create_app():
     app = Flask(__name__)
@@ -59,6 +69,15 @@ def create_app():
         news = Feedback.query.order_by(Feedback.response_date.desc()).all()
         return render_template('feedback.html', page_title=title, news_list=news)
     
+    @app.route("/<url>")
+    def get_local_feedback(url):
+        title = 'Дно банки'
+        news = Feedback.query.filter_by(url_page='/'+url).first()
+        print(news)
+        print(type(news))
+        return render_template('local_feedback.html', page_title=title, news_list=news)
+
+
     @app.route("/categories")
     def get_categories(categories: list = categories):
         bank_dict = {}
@@ -72,4 +91,43 @@ def create_app():
             bank_dict[cat] = [qr,plot_div]
         return render_template('categories.html', page_title=title, banks_dict=bank_dict)
     
+    def validate_input(form, field):
+        errors = []
+        excluded_chars = "*?!'^+%&;/()=}][{$#"
+        for char in field.data:
+            if char in excluded_chars:
+                errors.append(f'Символ {char} запрещен для ввода!')
+        if errors:
+            raise ValidationError(*errors)
+
+    class FeedbackForm(FlaskForm):
+        bank = StringField('Банк', validators=[DataRequired(), Length(min=2, max=50), validate_input])
+        theme = StringField('Тема', validators=[DataRequired(), Length(min=2, max=100),validate_input])
+        category = StringField('Категория', validators=[DataRequired()])
+        review = StringField('Отзыв', validators=[DataRequired(), Length(min=2, max=3000),validate_input])
+        city = StringField('Город', validators=[DataRequired(), Length(min=2, max=50),validate_input])
+        submit = SubmitField('Отправить')
+
+    @app.route('/post_feedback', methods=['GET', 'POST'])
+    def post_feedback():
+        title = 'Дно банки'
+        form = FeedbackForm()
+        if form.validate_on_submit():
+            form.csrf_token.data = csrf.generate_csrf()
+            print("Data passed validation!")
+            bank = form.bank.data
+            theme = form.theme.data
+            category = form.category.data
+            review = form.review.data
+            city = form.city.data
+            id_res_in = generate_short_id_resource(review)
+            id_page_in = '/' + id_res_in
+            response_date_in = datetime.datetime.now()
+            save_response(id_res_in, id_page_in, bank, category, theme, response_date_in, city, review)
+            print(f'Отзыв добавлен {id_page_in}, {review}')
+            return "Отзыв отправлен!"
+        else:
+            print(form.errors)
+        return render_template('post_feedback.html', page_title=title, form=form)
+   
     return app 

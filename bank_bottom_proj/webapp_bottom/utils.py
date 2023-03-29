@@ -4,7 +4,8 @@ UserAgent().chrome
 from flask import Flask
 from model import db, Feedback
 from config import SQLALCHEMY_DATABASE_URI
-
+import hashlib
+from sqlalchemy.exc import SQLAlchemyError
 
 def get_url(url_page:str):
     ua = UserAgent()
@@ -29,13 +30,29 @@ def get_url(url_page:str):
 def save_response(id_url, url_page, bank_name, category, short_feedback, response_date, response_city, response_full) -> None:
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
-    with app.app_context():
-        # @todo добавить обработку sqlalchemy.exc.OperationalError
-        db.init_app(app)
-        url_exists = Feedback.query.filter(Feedback.url_page == url_page).count()
-        if not url_exists:
-            new_feedback = Feedback(id_url=id_url, url_page=url_page, bank_name=bank_name, category=category, 
-                                    short_feedback=short_feedback,response_date=response_date,response_city=response_city,
-                                    response_full=response_full)
-            db.session.add(new_feedback)
-            db.session.commit()
+    try:
+        with app.app_context():
+            try:
+                db.init_app(app)
+                url_exists = Feedback.query.filter(Feedback.url_page == url_page).count()
+                if not url_exists:
+                    new_feedback = Feedback(id_url=id_url, url_page=url_page, bank_name=bank_name, category=category, 
+                                            short_feedback=short_feedback,response_date=response_date,response_city=response_city,
+                                            response_full=response_full)
+                    db.session.add(new_feedback)
+                    db.session.commit()
+            except SQLAlchemyError as sq:
+                 print(f'Ошибка sqlalchemy записи в save_response в бд: {sq}')
+    except Exception as ex0:
+         print(f'Ошибка в utlils.save_response: {ex0}')
+
+
+def generate_short_id_resource(feedb):
+    # Получаем хэш от URL с использованием sha256
+    hash_object = hashlib.sha256(feedb.encode())
+    hex_dig = hash_object.hexdigest()
+
+    # Оставляем только первые 8 символов хэша и возвращаем его
+    short_hash = hex_dig[:8]
+    return short_hash
+
