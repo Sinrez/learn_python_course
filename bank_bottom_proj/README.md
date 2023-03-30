@@ -14,12 +14,12 @@ Bank Bottom is a project that aggregates statistics on negative reviews about ba
 This is Pat-Project. It was created because many websites with bank reviews do not publish statistics on reviews, distorting information about the quality of banking services. At the MVP stage, negative reviews are collected for the main banking products: Credits, Deposits, Cards, Services, etc.
 
 ## Архитектура решения
-![Архитектура решения](.bank_bottom_proj/Arch Solution.png)
+<img src= "/bank_bottom_proj/Arch Solution.png" width = "600" height = "400" > 
 
 ## Интерфейсы
 
 ### Bot
-![bot](.bank_bottom_proj/tg.png)
+<img src= "/bank_bottom_proj/tg.png" width = "700" height = "400" > 
 
 ### UI
-![UI](.bank_bottom_proj/ui.png)
+<img src= "/bank_bottom_proj/ui.png" width = "800" height = "400" > 
