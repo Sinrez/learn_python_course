@@ -1,4 +1,5 @@
 # source env_bottom/bin/activate
+# celery -A tasks worker --loglevel=info
 
 import sys
 
