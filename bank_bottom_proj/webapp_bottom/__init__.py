@@ -26,7 +26,7 @@ def create_app():
     db.init_app(app)
     migrate = Migrate(app, db)
 
-    def get_count_from_db(days=10, cat = ''):
+    def get_count_from_db(days=15, cat = ''):
         delta = datetime.timedelta(days)
         now_day = datetime.date.today()
         delta_days = now_day - delta
@@ -76,7 +76,6 @@ def create_app():
         print(news)
         print(type(news))
         return render_template('local_feedback.html', page_title=title, news_list=news)
-
 
     @app.route("/categories")
     def get_categories(categories: list = categories):
