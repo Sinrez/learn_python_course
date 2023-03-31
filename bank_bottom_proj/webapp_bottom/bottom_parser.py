@@ -1,6 +1,4 @@
 # source env_bottom/bin/activate
-# celery -A tasks worker --loglevel=info
-
 import sys
 
 #это локальные костыли для доступности вспомогательных файлов, добавлять перед импортом основных библиотек
