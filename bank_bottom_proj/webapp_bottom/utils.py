@@ -6,6 +6,7 @@ from model import db, Feedback, User
 from config import SQLALCHEMY_DATABASE_URI
 import hashlib
 from sqlalchemy.exc import SQLAlchemyError
+from flask_sqlalchemy import SQLAlchemy
 
 def get_url(url_page:str):
     ua = UserAgent()
@@ -77,19 +78,22 @@ def get_or_create_user(effective_user, chat_id) -> None:
 
 def subscribe_user(user_data):
     app = Flask(__name__)
+    db = SQLAlchemy()
     app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
+    db.init_app(app)
     with app.app_context():
-        print(user_data.subscribed)
         if user_data.subscribed is False or user_data.subscribed is None:
-            user_data.subscribed = True
+            db.session.query(User).filter(User.id_user == user_data.id_user).update({"subscribed": True})
             db.session.flush()
             db.session.commit()
 
 def unsubscribe_user(user_data):
     app = Flask(__name__)
+    db = SQLAlchemy()
     app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
+    db.init_app(app)
     with app.app_context():
         if user_data.subscribed:
-            user_data.subscribed = False
+            db.session.query(User).filter(User.id_user == user_data.id_user).update({"subscribed": False})
             db.session.flush()
             db.session.commit()
