@@ -31,6 +31,7 @@
               <div class="card-header">
                 <h3><span style="font-weight:bold;">Краткое содержание:</span> {{ news_list.short_feedback }}</h3>
               </div>
+              {% if news_list %}
               <div class="card-body">
                 <p>Дата: {{ news_list.response_date.strftime('%d.%m.%Y') }}</p>
                 <p>Категория: {{ news_list.category }}</p>
@@ -38,6 +39,7 @@
                 <p>Город: {{ news_list.city }}</p>
                 <p>Отзыв: {{ news_list.review }}</p>
               </div>
+              {% endif %}
             </div>
         </div>
       </div>
