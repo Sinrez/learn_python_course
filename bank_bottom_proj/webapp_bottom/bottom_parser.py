@@ -61,6 +61,9 @@ def page_parser(url_page: str, category: str ='') -> tuple:
             #получаем название банка 
             bank_na = bs2.find('img', class_='lazy-load')
             bank_name = str(bank_na).split('"')[1].replace('alt="','').replace('"','')
+            if bank_name == 'Банки.ру':
+                bank_na = bs2.find('span', class_='link-simple link-simple--theme_major-gray').text.strip()
+                bank_name = bank_na
             #получаем полный отзыв
             response_full = bs2.find('div', class_='lb1789875 markdown-inside markdown-inside--list-type_circle-fill').text.strip()
             #получаем дату отзыва
