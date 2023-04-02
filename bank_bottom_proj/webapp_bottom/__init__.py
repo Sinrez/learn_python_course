@@ -6,7 +6,6 @@ import sys
 #это локальные костыли для доступности вспомогательных файлов, добавлять перед импортом основных библиотек
 sys.path.append('..') 
 sys.path.append('/Volumes/D/learn_python_course/bank_bottom_proj/webapp_bottom') 
-sys.path.append('bank_bottom_proj/webapp_bottom')
 
 from flask import Flask, render_template, jsonify, request
 from webapp_bottom.model  import db, Feedback
