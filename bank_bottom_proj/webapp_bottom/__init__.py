@@ -6,7 +6,6 @@ import sys
 #это локальные костыли для доступности вспомогательных файлов, добавлять перед импортом основных библиотек
 sys.path.append('..') 
 sys.path.append('/Volumes/D/learn_python_course/bank_bottom_proj/webapp_bottom') 
-sys.path.append('bank_bottom_proj/webapp_bottom')
 
 from flask import Flask, render_template, jsonify, request
 from webapp_bottom.model  import db, Feedback
@@ -26,7 +25,7 @@ def create_app():
     db.init_app(app)
     migrate = Migrate(app, db)
 
-    def get_count_from_db(days=10, cat = ''):
+    def get_count_from_db(days=15, cat = ''):
         delta = datetime.timedelta(days)
         now_day = datetime.date.today()
         delta_days = now_day - delta
@@ -76,7 +75,6 @@ def create_app():
         print(news)
         print(type(news))
         return render_template('local_feedback.html', page_title=title, news_list=news)
-
 
     @app.route("/categories")
     def get_categories(categories: list = categories):

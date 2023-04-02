@@ -1,6 +1,0 @@
--- DELETE from feedback;
--- COMMIT
-
-SELECT bank_name, count(*) as 'count' from feedback
-group by bank_name
-ORDER by 'count' DESC

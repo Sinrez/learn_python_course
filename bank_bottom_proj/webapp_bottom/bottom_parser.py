@@ -1,12 +1,9 @@
 # source env_bottom/bin/activate
-# celery -A tasks worker --loglevel=info
-
 import sys
 
 #это локальные костыли для доступности вспомогательных файлов, добавлять перед импортом основных библиотек
 sys.path.append('..') 
 sys.path.append('/Volumes/D/learn_python_course/bank_bottom_proj/webapp_bottom') 
-sys.path.append('bank_bottom_proj/webapp_bottom')
 
 from bs4 import BeautifulSoup
 from time import sleep
@@ -63,6 +60,10 @@ def page_parser(url_page: str, category: str ='') -> tuple:
             #получаем название банка 
             bank_na = bs2.find('img', class_='lazy-load')
             bank_name = str(bank_na).split('"')[1].replace('alt="','').replace('"','')
+            #на этом шаге название банка может отстустовать как alt текст картинки логотипа, тогда парсится Банки.ру, поэтому:
+            if bank_name == 'Банки.ру':
+                bank_na = bs2.find('span', class_='link-simple link-simple--theme_major-gray').text.strip()
+                bank_name = bank_na
             #получаем полный отзыв
             response_full = bs2.find('div', class_='lb1789875 markdown-inside markdown-inside--list-type_circle-fill').text.strip()
             #получаем дату отзыва

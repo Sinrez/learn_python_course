@@ -1,18 +1,34 @@
 #@bank_bottom_bot
 
+import sys
+
+#это локальные костыли для доступности вспомогательных файлов, добавлять перед импортом основных библиотек
+sys.path.append('..') 
+sys.path.append('/Volumes/D/learn_python_course/bank_bottom_proj/webapp_bottom') 
+sys.path.append('bank_bottom_proj/webapp_bottom')
+
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 import logging
 import settings
 from telegram import ReplyKeyboardMarkup, KeyboardButton
 from get_banks import get_weekly_bottom, get_all_categories_week
 import datetime
+from utils import db, get_or_create_user, subscribe_user, unsubscribe_user
+
 
 msg = 'Я - бот "Дно банки" показываю какие банки 🏦 на этой неделе пробили дно отрицательных отзывов 💩. Жмите кнопки для просмотра статистики:'
+
 
 keyb = [
     [KeyboardButton('Узнать антирейтинг лидеров недели'), KeyboardButton('Узнать антирейтинг по категориям')]
 ]
 
+# кнопки подписки и отписки
+subscribe_button = KeyboardButton('Подписаться')
+unsubscribe_button = KeyboardButton('Отписаться')
+keyb.append([subscribe_button, unsubscribe_button])
+
+# логируем в файл
 logging.basicConfig(
     level=logging.INFO,
     filename='bot.log',
@@ -23,6 +39,8 @@ logging.basicConfig(
 # Функция для обработки команды /start
 def start_handler(update, context):
     print('Вызван /start')
+    #сохраняем пришедшего юзера в бд для работы подписки
+    user = get_or_create_user(update.effective_user, update.message.chat.id)
     print(update)
     user_f_name = update.message.chat.first_name
     user_l_name = update.message.chat.last_name
@@ -54,6 +72,16 @@ def send_weekly_bottom(context: CallbackContext):
     result = '\n'.join([f'{key}: {value}' for key, value in dictionary.items()])
     context.bot.send_message(chat_id=chat_id, text=str(result))
     
+def subscribe(update, context):
+    user = get_or_create_user(update.effective_user, update.message.chat.id)
+    subscribe_user(user)
+    update.message.reply_text('Вы успешно подписались')
+
+def unsubscribe(update, context):
+    user = get_or_create_user(update.effective_user, update.message.chat.id)
+    unsubscribe_user(user)
+    update.message.reply_text('Вы успешно отписались')
+
 # Функция, которая соединяется с платформой Telegram, "тело" нашего бота
 def main():
     try:
@@ -63,6 +91,11 @@ def main():
         dp.add_handler(CommandHandler("start", start_handler))
         dp.add_handler(MessageHandler(Filters.regex('Узнать антирейтинг лидеров недели'), button1_handler))
         dp.add_handler(MessageHandler(Filters.regex('Узнать антирейтинг по категориям'), button2_handler))
+        # обработчики для кнопок подписки и отписки
+        dp.add_handler(CommandHandler('subscribe', subscribe))
+        dp.add_handler(CommandHandler('unsubscribe', unsubscribe))
+        dp.add_handler(MessageHandler(Filters.regex('Подписаться'), subscribe))
+        dp.add_handler(MessageHandler(Filters.regex('Отписаться'), unsubscribe))
         # Задаем расписание для отправки сообщений
         weekly_time = datetime.time(hour=13, minute=0, second=0)
         weekday = 4 # Пятница

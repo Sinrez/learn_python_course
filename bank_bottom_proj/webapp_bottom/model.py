@@ -14,3 +14,13 @@ class Feedback(db.Model):
     
         def __repr__(self):
             return f' Отзыв: {self.bank_name}, {self.category}, {self.short_feedback}, {self.url_page}'
+
+class User(db.Model):
+        id_user = db.Column(db.String,unique=True, primary_key=True, nullable=False)
+        first_name = db.Column(db.String, nullable=True)
+        last_name = db.Column(db.String, nullable=True)
+        user_name = db.Column(db.String, nullable=True)
+        chat_id = db.Column(db.String,unique=True, nullable=False)
+        subscribed = db.Column(db.Boolean, default=False)
+
+      
