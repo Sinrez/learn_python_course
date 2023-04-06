@@ -47,8 +47,21 @@ class Dog(db.Model):
                 db.session.add(friendship)
                 db.session.commit()
 
+        #Эти методы будут находить соответствующий запрос 
+        # на дружбу между двумя собаками и менять его статус на "подтвержденный" или "отклоненный"
+        def accept_friend_request(self, other_dog):
+                friendship = Friendship.query.filter_by(sender_dog_id=other_dog.id_dog, receiver_dog_id=self.id_dog).first()
+                if friendship:
+                        friendship.accept_request()
+
+        def decline_friend_request(self, other_dog):
+                friendship = Friendship.query.filter_by(sender_dog_id=other_dog.id_dog, receiver_dog_id=self.id_dog).first()
+                if friendship:
+                        friendship.decline_request()
+
         def __repr__(self):
                 return f' Отзыв: {self.name_dog}, {self.breed_dog}, {self.age_dog}'
+
 
 class User(db.Model):
         id_user = db.Column(db.String,unique=True, primary_key=True, nullable=False)
