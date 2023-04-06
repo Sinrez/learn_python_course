@@ -1,0 +1,34 @@
+*.pyc
+*.egg-info
+
+# Если вы программируете на Mac
+.DS_Store
+../.DS_Store
+
+# Если вы пользуетесь виртуальными окружениями
+/env
+/env_dogs
+/res.txt
+/bs.txt
+
+# Настройки и хранение секретных данных
+/.env
+/.env_dogs
+settings.py
+*.log
+.vscode/
+.idea/
+env/
+.DS_Store
+__pycache__/
+config.py
+__pycache__/
+.vscode/
+env/
+drafts
+vscode
+DS_Store
+bottom.db
+bottom
+celerybeat-schedule.db
+celerybeat-schedule

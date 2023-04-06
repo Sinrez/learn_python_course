@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{{page_title}}</title>
+	<style>
+	.header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+        .header img {
+		width: 200px;
+	}
+
+	.header span {
+		font-size: 24px;
+		font-weight: bold;
+		margin-left: 20px;
+	}
+
+	.buttons {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.buttons button {
+		padding: 10px 20px;
+		background-color: #4CAF50;
+		color: white;
+		border: none;
+		border-radius: 5px;
+		font-size: 16px;
+		cursor: pointer;
+	}
+
+	.buttons button:hover {
+		background-color: #3e8e41;
+	}
+
+	.buttons button:active {
+		background-color: #3e8e41;
+		box-shadow: 0 5px #666;
+		transform: translateY(4px);
+	}
+</style>
+</head>
+<body>
+	<div class="header">
+		<img src="{{ url_for('static', filename='logo.png') }}" alt="Собакруг">
+		<span>{{page_title}}</span>
+		<div class="login-buttons">
+			<a href="{{ url_for('login') }}" class="button">Войти</a>
+			<a href="{{ url_for('register') }}" class="button">Регистрация</a>
+		</div>
+	</div>
+	<div class="container">
+		{% for dog in dogs %}
+		<div class="dog">
+			<div class="photo">
+				<img src="{{ url_for('static', filename=dog.photo) }}" alt="{{ dog.name }}">
+			</div>
+			<div class="details">
+				<p><strong>Кличка:</strong> {{ dog.name }}</p>
+				<p><strong>Порода:</strong> {{ dog.breed }}</p>
+				<p><strong>Возраст:</strong> {{ dog.age }}</p>
+				<a href="{{ url_for('dog_details', dog_id=dog.id) }}" class="button">Перейти</a>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+</body>
+</html>
