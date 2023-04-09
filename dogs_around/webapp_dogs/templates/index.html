@@ -13,10 +13,7 @@
 			align-items: center;
 			justify-content: space-between;
 		}
-        .header img {
-		width: 200px;
-	}
-
+	
 	.header span {
 		font-size: 24px;
 		font-weight: bold;
@@ -50,7 +47,7 @@
 	}
 .details {
   text-align: center;
-  margin-top: 20px;
+  margin-top: 10px;
   margin-bottom: 20px;
 }
 .details p {
@@ -67,17 +64,54 @@
 
 .login-buttons {
   margin-top: 20px;
+  margin-left: 10px;
 }
+
+.header img {
+  width: 200px;
+  margin-left: 20px;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  margin-left: 60px;
+}
+.title span {
+  margin-left: 20px;
+  font-weight: bold;
+}
+
+.container {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-gap: 20px;
+}
+
+.dog {
+  border: 1px solid #ccc;
+  padding: 20px;
+}
+
+.photo img {
+  max-width: 100%;
+  height: auto;
+}
+
 </style>
 </head>
 <body>
 	<div class="header">
 		<img src="{{ url_for('static', filename='logo.png') }}" alt="Собакруг">
+	</div>
+	<div class="title">
 		<span>{{page_title}}</span>
-		<div class="buttons">
-			<a href="{{ url_for('login') }}" class="button">Войти</a>
-			<a href="{{ url_for('registration') }}" class="button">Регистрация</a>
-		</div>
+	</div>
+	<div class="buttons login-buttons">
+		<a href="{{ url_for('login') }}" class="button">Войти</a>
+		<a href="{{ url_for('registration') }}" class="button">Регистрация</a>
 	</div>
 	<div class="container">
 		{% for dog in dogs %}

@@ -30,12 +30,17 @@ def create_app():
     def login():
         title = "Авторизация"
         login_form = LoginForm()
-        return render_template('login.html', page_title=title, form=login_form)
+        if request.method == 'POST' and login_form.validate_on_submit():
+            email = request.form['email']
+            password = request.form['password']
+            # добавить проверку и обработку
+            return render_template('login.html', page_title=title, form=login_form)
+        return render_template('login.html', form=login_form)
 
     @app.route('/registration', methods=['GET', 'POST'])
     def registration():
         form = RegistrationForm()
-        if request.method == 'POST':
+        if request.method == 'POST' and form.validate_on_submit():
             # Получение данных из формы
             id_user = generate_id_user()
             first_name = request.form['first_name']
@@ -64,14 +69,15 @@ def create_app():
                     return redirect(url_for('login'))
             # Если данные не прошли валидацию, показываем ошибки пользователю
             return render_template('registration.html', error=error)
-
+        else:
+            print(form.errors)
         # Если метод запроса GET, просто отображаем шаблон
         return render_template('registration.html', form=form)
 
     @app.route('/register_dog', methods=['GET', 'POST'])
     def register_dog():
         form = DogForm()
-        if request.method == 'POST' and form.validate():
+        if request.method == 'POST' and form.validate_on_submit():
             name_dog = form.name_dog.data
             age_dog = form.age_dog.data
             breed_dog = form.breed_dog.data
@@ -96,6 +102,7 @@ def create_app():
                 get_or_create_dog(id_dog,name_dog, age_dog, breed_dog, response_date,city_dog, foto_dog, voice_dog)
             flash('Респекты, ваш песель зарегистрирован!')
             return redirect(url_for('index'))
-        
+        else:
+            print(form.errors)
         return render_template('register_dog.html', form=form)
     return app

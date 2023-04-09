@@ -19,21 +19,36 @@
     {{ form.csrf_token }}
     <div class="form-group">
       {{ form.name_dog.label }} {{ form.name_dog(size=20, class_='form-control', style='width:50%;') }}
+      {% for error in form.name_dog.errors %}
+      <div class="invalid-name">{{ error }}</div>
+    {% endfor %}
     </div>
     <div class="form-group">
       {{ form.age_dog.label }} {{ form.age_dog(size=20, class_='form-control',style='width:50%;') }}
+      {% for error in form.age_dog.errors %}
+      <div class="invalid-name">{{ error }}</div>
+    {% endfor %}
     </div>
     <div class="form-group">
       {{ form.breed_dog.label }} {{ form.breed_dog(size=20, class_='form-control', style='width:50%;') }}
     </div>
     <div class="form-group">
       {{ form.city_dog.label }} {{ form.city_dog(size=20, class_='form-control', style='width:50%;') }}
+      {% for error in form.city_dog.errors %}
+      <div class="invalid-name">{{ error }}</div>
+    {% endfor %}
     </div>
     <div class="form-group">
       {{ form.foto_dog.label }} {{ form.foto_dog(size=20, class_='form-control', style='width:50%;') }}
+      {% for error in form.foto_dog.errors %}
+      <div class="invalid-name">{{ error }}</div>
+    {% endfor %}
     </div>
     <div class="form-group">
       {{ form.voice_dog.label }} {{ form.voice_dog(size=20, class_='form-control', style='width:50%;') }}
+      {% for error in form.voice_dog.errors %}
+      <div class="invalid-name">{{ error }}</div>
+    {% endfor %}
     </div>
     <div class="form-group">
       {{ form.submit(class_='btn btn-primary') }}

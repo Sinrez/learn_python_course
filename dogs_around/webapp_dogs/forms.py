@@ -5,7 +5,7 @@ from wtforms.validators import DataRequired, EqualTo, Email, Length
 csrf = CSRFProtect()
 
 class LoginForm(FlaskForm):
-    username = StringField('Имя пользователя', validators=[DataRequired()])
+    email = StringField('Почта пользователя', validators=[DataRequired()])
     password = PasswordField('Пароль', validators=[DataRequired()])
     submit = SubmitField('Отправить')
 
