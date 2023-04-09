@@ -1,6 +1,15 @@
 from flask_sqlalchemy import SQLAlchemy
+import enum
+from sqlalchemy import Integer, Enum
 
 db = SQLAlchemy()
+
+#для обарботки статусов дружбы accepted, declined, friendship
+class FrendStatusEnum(enum.Enum):
+    pending = 0
+    accepted = 1
+    friendship = 2
+    declined = 3
 
 # таблица для связи многие-ко многим владелец-собака, так как у собаки может быть более 1 владельца
 association_table = db.Table('association',
@@ -14,14 +23,14 @@ class Friendship(db.Model):
         id = db.Column(db.Integer, primary_key=True)
         sender_dog_id = db.Column(db.String, db.ForeignKey('dog.id_dog'))
         receiver_dog_id = db.Column(db.String, db.ForeignKey('dog.id_dog'))
-        status = db.Column(db.String, default="pending")
+        status = db.Column(db.String, default=FrendStatusEnum.pending.value)
         
         def accept_request(self):
-                self.status = "accepted"
+                self.status = FrendStatusEnum.accepted.value
                 db.session.commit()
 
         def decline_request(self):
-                self.status = "declined"
+                self.status = FrendStatusEnum.declined.value
                 db.session.commit()
 
 
@@ -32,13 +41,13 @@ class Dog(db.Model):
         breed_dog = db.Column(db.String, nullable=False)
         response_date = db.Column(db.DateTime, nullable=False)
         city_dog = db.Column(db.String, nullable=True)
-        foto_dog = db.Column(db.Blob, nullable=False)
-        voice_dog = db.Column(db.Blob, nullable=False)
+        foto_dog = db.Column(db.String, nullable=True)
+        voice_dog = db.Column(db.String, nullable=True)
         users = db.relationship('User', secondary=association_table, back_populates='dogs')
 
         def get_friend_requests(self):
                 #для получения списка всех запросов на дружбу для конкретной собаки
-                friend_requests = Friendship.query.filter_by(receiver_dog_id=self.id_dog, status="pending").all()
+                friend_requests = Friendship.query.filter_by(receiver_dog_id=self.id_dog, status=FrendStatusEnum.pending.value).all()
                 return friend_requests
         
         def send_friend_request(self, other_dog):
@@ -68,8 +77,10 @@ class User(db.Model):
         first_name = db.Column(db.String, nullable=False)
         last_name = db.Column(db.String, nullable=False)
         user_name = db.Column(db.String, nullable=True)
+        email = db.Column(db.String, nullable=False)
+        password = db.Column(db.String, nullable=False)
         chat_id = db.Column(db.String,unique=True, nullable=True)
-        subscribed = db.Column(db.Boolean, default=False)
+        subscribed = db.Column(db.Boolean, default=False, nullable=True)
         dogs = db.relationship('Dog', secondary=association_table, back_populates='users')
 
 
