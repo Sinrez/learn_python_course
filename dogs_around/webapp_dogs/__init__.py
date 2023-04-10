@@ -12,12 +12,21 @@ from webapp_dogs.model import db, User, Dog
 from webapp_dogs.forms import RegistrationForm, DogForm
 from webapp_dogs.forms import LoginForm
 from webapp_dogs.utils_dog import generate_id_user, get_or_create_user, generate_id_dog, get_or_create_dog
+from flask_login import LoginManager,login_user, logout_user, current_user, login_required
 
 def create_app():
     app = Flask(__name__)
     app.secret_key = config.SECRET_KEY
     app.config.from_pyfile('config.py')
     db.init_app(app)
+
+    login_manager = LoginManager()
+    login_manager.init_app(app)
+    login_manager.login_view = 'login'
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(user_id)    
 
     @app.route("/")
     def index():
@@ -26,17 +35,39 @@ def create_app():
         print(dogs)
         return render_template('index.html', page_title=title, dogs= dogs)
 
-    @app.route('/login')
+    @app.route('/login',  methods=['GET', 'POST'])
     def login():
         title = "Авторизация"
+        if current_user.is_authenticated:
+            return redirect(url_for('index'))
         login_form = LoginForm()
         if request.method == 'POST' and login_form.validate_on_submit():
-            email = request.form['email']
-            password = request.form['password']
-            # добавить проверку и обработку
-            return render_template('login.html', page_title=title, form=login_form)
-        return render_template('login.html', form=login_form)
+            # Если форма отправлена, перенаправить на обработчик входа пользователя
+            return redirect(url_for('process_login')) 
+        # Если форма не отправлена, отображать страницу логина
+        return render_template('login.html', page_title=title, form=login_form)
 
+    @app.route('/process-login', methods=['GET', 'POST'])
+    def process_login():
+        form = LoginForm()
+        print(form.email.data)
+        if request.method == 'POST' and form.validate_on_submit():
+            user = User.query.filter_by(email=form.email.data).first()
+            print(user)
+            if user and user.check_password(form.password.data):
+                login_user(user, remember=form.remember_me.data)
+                flash('Вы вошли на сайт')
+                return redirect(url_for('index'))
+            
+        flash('Неправильное имя пользователя или пароль')
+        return redirect(url_for('login'))
+    
+    @app.route('/logout')
+    def logout():
+        logout_user()
+        flash('Вы успешно разлогинились')
+        return redirect(url_for('index'))
+    
     @app.route('/registration', methods=['GET', 'POST'])
     def registration():
         form = RegistrationForm()

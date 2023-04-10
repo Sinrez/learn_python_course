@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 import enum
-from sqlalchemy import Integer, Enum
+from werkzeug.security import check_password_hash
 
 db = SQLAlchemy()
 
@@ -82,5 +82,8 @@ class User(db.Model):
         chat_id = db.Column(db.String,unique=True, nullable=True)
         subscribed = db.Column(db.Boolean, default=False, nullable=True)
         dogs = db.relationship('Dog', secondary=association_table, back_populates='users')
+
+        def check_password(self, password):
+                return check_password_hash(self.password, password)
 
 
