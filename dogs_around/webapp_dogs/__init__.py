@@ -35,32 +35,23 @@ def create_app():
         print(dogs)
         return render_template('index.html', page_title=title, dogs= dogs)
 
-    @app.route('/login',  methods=['GET', 'POST'])
+
+    @app.route('/login', methods=['GET', 'POST'])
     def login():
         title = "Авторизация"
-        if current_user.is_authenticated:
-            return redirect(url_for('index'))
-        login_form = LoginForm()
-        if request.method == 'POST' and login_form.validate_on_submit():
-            # Если форма отправлена, перенаправить на обработчик входа пользователя
-            return redirect(url_for('process_login')) 
-        # Если форма не отправлена, отображать страницу логина
-        return render_template('login.html', page_title=title, form=login_form)
-
-    @app.route('/process-login', methods=['GET', 'POST'])
-    def process_login():
         form = LoginForm()
-        print(form.email.data)
-        if request.method == 'POST' and form.validate_on_submit():
+
+        if request.method == 'POST' and form.validate():
             user = User.query.filter_by(email=form.email.data).first()
-            print(user)
+
             if user and user.check_password(form.password.data):
-                login_user(user, remember=form.remember_me.data)
-                flash('Вы вошли на сайт')
+                flash('Вы успешно авторизовались!', 'success')
                 return redirect(url_for('index'))
-            
-        flash('Неправильное имя пользователя или пароль')
-        return redirect(url_for('login'))
+                # return redirect(url_for('cabinet'))
+            else:
+                flash('Неправильное имя пользователя или пароль', 'danger')
+
+        return render_template('login.html', form=form, title=title)
     
     @app.route('/logout')
     def logout():

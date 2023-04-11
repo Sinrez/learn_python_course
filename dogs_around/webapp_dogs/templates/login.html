@@ -26,15 +26,13 @@
         <form action="" method="post">
             {{ form.hidden_tag() }}
             <div class="form-group">
-                {{ form.email.label }}<br>
-                {{ form.email() }}
+                {{ form.email.label }} {{ form.email(size=20, class_='form-control', style='width:30%;') }}
                 {% for error in form.email.errors %}
                 <div class="invalid-name">{{ error }}</div>
               {% endfor %}
             </div>
             <div class="form-group">
-                {{ form.password.label }}<br>
-                {{ form.password() }}
+                {{ form.password.label }} {{ form.password(size=20, class_='form-control', style='width:30%;') }}
                 {% for error in form.password.errors %}
                 <div class="invalid-name">{{ error }}</div>
               {% endfor %}

@@ -100,9 +100,23 @@
   height: auto;
 }
 
+.round {
+  margin-top: 20px;
+  margin-left: 130px;
+}
+
 </style>
 </head>
 <body>
+	{% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul class="flashes">
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
 	<div class="header">
 		<img src="{{ url_for('static', filename='logo.png') }}" alt="Собакруг">
 	</div>
@@ -113,6 +127,7 @@
 		<a href="{{ url_for('login') }}" class="button">Войти</a>
 		<a href="{{ url_for('registration') }}" class="button">Регистрация</a>
 	</div>
+	<h3 class="round">Сегодня в круге:</h3>
 	<div class="container">
 		{% for dog in dogs %}
 		<div class="dog">
