@@ -1,7 +1,7 @@
 # source env_dogs/bin/activate
 # ./run.sh
 
-from flask import Flask, render_template, flash, redirect, url_for,request
+from flask import Flask, render_template, flash, redirect, url_for,request, session
 from datetime import datetime
 from wtforms.validators import DataRequired, Length, ValidationError
 from flask_wtf import FlaskForm, csrf
@@ -39,8 +39,13 @@ def create_app():
     def cabinet():
         title = 'Мой профиль'
         dogs = Dog.query.order_by(Dog.response_date.desc()).all() 
-        print(dogs)
         return render_template('cabinet.html', page_title=title, dogs= dogs)
+    
+    @app.route("/profile")
+    def profile():
+        title = 'Мой профиль'
+
+        return render_template('profile.html', page_title=title)
 
 
     @app.route('/login', methods=['GET', 'POST'])
@@ -53,7 +58,6 @@ def create_app():
 
             if user and user.check_password(form.password.data):
                 flash('Вы успешно авторизовались!', 'success')
-                # return redirect(url_for('index'))
                 return redirect(url_for('cabinet'))
             else:
                 flash('Неправильное имя пользователя или пароль', 'danger')
@@ -103,14 +107,25 @@ def create_app():
         # Если метод запроса GET, просто отображаем шаблон
         return render_template('registration.html', form=form)
     
-    @app.route('/dog', methods=['GET', 'POST'])
+    @app.route('/dog', methods=['GET'])
     def dog():
         pass
 
     @app.route('/register_dog', methods=['GET', 'POST'])
+    @login_required
     def register_dog():
         form = DogForm()
         if request.method == 'POST' and form.validate_on_submit():
+
+            # Проверка аутентификации пользователя
+            if current_user.is_authenticated:
+                username = current_user.username
+                print(username)
+            else:
+                # Обработка ошибки в случае, если пользователь не аутентифицирован
+                flash('Пожалуйста, войдите в систему, чтобы зарегистрировать собаку', 'danger')
+                return redirect(url_for('login'))
+
             name_dog = form.name_dog.data
             age_dog = form.age_dog.data
             breed_dog = form.breed_dog.data
@@ -132,9 +147,9 @@ def create_app():
                 error = 'Город обязателе для заполнения.'
 
             if error is None:
-                get_or_create_dog(id_dog,name_dog, age_dog, breed_dog, response_date,city_dog, foto_dog, voice_dog)
+                get_or_create_dog(id_dog,name_dog, age_dog, breed_dog, response_date,city_dog, foto_dog, voice_dog, username)
             flash('Респекты, ваш песель зарегистрирован!')
-            return redirect(url_for('index'))
+            return redirect(url_for('cabinet'))
         else:
             print(form.errors)
         return render_template('register_dog.html', form=form)
