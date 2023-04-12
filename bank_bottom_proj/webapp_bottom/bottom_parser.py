@@ -20,12 +20,15 @@ def page_fliper(categories: list = categories, start: int = 1, limit: int = 4) -
     url_base_site = 'https://www.banki.ru'
     check_url(url_base_site)
     for cat in categories:
+        print(f'Обрабатываю категорию {cat}')
+        print()
         #цикл перебора следуюших страниц, так как есть параметр page= и с ним не вытащить ссылки из цикла выше
         for l in range(start, limit+1):
             url_categor_history = f'https://www.banki.ru/services/responses/list/product/{cat}/?page={l}&is_countable=on&rate[]=1&rate[]=2'
+            print(url_categor_history)
             for url in urls_parser(url_categor_history,url_base_site):
-                check_url(url)
                 if url:
+                    # print(url)
                     try:
                         *result, = page_parser(url, cat)
                         save_response(*result)
