@@ -38,8 +38,9 @@ def create_app():
     @app.route("/cabinet")
     def cabinet():
         title = 'Мой профиль'
+        username = session.get('username')
         dogs = Dog.query.order_by(Dog.response_date.desc()).all() 
-        return render_template('cabinet.html', page_title=title, dogs= dogs)
+        return render_template('cabinet.html', page_title=title, dogs= dogs,  username = username)
     
     @app.route("/profile")
     def profile():
@@ -47,6 +48,22 @@ def create_app():
 
         return render_template('profile.html', page_title=title)
 
+
+    # @app.route('/login', methods=['GET', 'POST'])
+    # def login():
+    #     title = "Авторизация"
+    #     form = LoginForm()
+
+    #     if request.method == 'POST' and form.validate():
+    #         user = User.query.filter_by(email=form.email.data).first()
+
+    #         if user and user.check_password(form.password.data):
+    #             flash('Вы успешно авторизовались!', 'success')
+    #             return redirect(url_for('cabinet'))
+    #         else:
+    #             flash('Неправильное имя пользователя или пароль', 'danger')
+
+    #     return render_template('login.html', form=form, title=title)
 
     @app.route('/login', methods=['GET', 'POST'])
     def login():
@@ -58,7 +75,11 @@ def create_app():
 
             if user and user.check_password(form.password.data):
                 flash('Вы успешно авторизовались!', 'success')
-                return redirect(url_for('cabinet'))
+                next_page = request.args.get('next') # получаем параметр next из URL
+                if next_page:
+                    return redirect(next_page) # если параметр есть, переходим по нему
+                else:
+                    return redirect(url_for('cabinet'))
             else:
                 flash('Неправильное имя пользователя или пароль', 'danger')
 
@@ -112,20 +133,11 @@ def create_app():
         pass
 
     @app.route('/register_dog', methods=['GET', 'POST'])
-    @login_required
     def register_dog():
         form = DogForm()
         if request.method == 'POST' and form.validate_on_submit():
-
-            # Проверка аутентификации пользователя
-            if current_user.is_authenticated:
-                username = current_user.username
-                print(username)
-            else:
-                # Обработка ошибки в случае, если пользователь не аутентифицирован
-                flash('Пожалуйста, войдите в систему, чтобы зарегистрировать собаку', 'danger')
-                return redirect(url_for('login'))
-
+            username = request.args.get('username')
+            print(username)
             name_dog = form.name_dog.data
             age_dog = form.age_dog.data
             breed_dog = form.breed_dog.data

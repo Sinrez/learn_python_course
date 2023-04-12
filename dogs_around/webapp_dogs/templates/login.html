@@ -23,7 +23,7 @@
     {% endif %}
   {% endwith %}
     <div class="form-container">
-        <form action="" method="post">
+      <form method="post" action="{{ url_for('login', next=next) }}">
             {{ form.hidden_tag() }}
             <div class="form-group">
                 {{ form.email.label }} {{ form.email(size=20, class_='form-control', style='width:30%;') }}
