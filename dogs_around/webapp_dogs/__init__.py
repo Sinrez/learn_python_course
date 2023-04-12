@@ -35,6 +35,13 @@ def create_app():
         print(dogs)
         return render_template('index.html', page_title=title, dogs= dogs)
 
+    @app.route("/cabinet")
+    def cabinet():
+        title = 'Мой профиль'
+        dogs = Dog.query.order_by(Dog.response_date.desc()).all() 
+        print(dogs)
+        return render_template('cabinet.html', page_title=title, dogs= dogs)
+
 
     @app.route('/login', methods=['GET', 'POST'])
     def login():
@@ -46,8 +53,8 @@ def create_app():
 
             if user and user.check_password(form.password.data):
                 flash('Вы успешно авторизовались!', 'success')
-                return redirect(url_for('index'))
-                # return redirect(url_for('cabinet'))
+                # return redirect(url_for('index'))
+                return redirect(url_for('cabinet'))
             else:
                 flash('Неправильное имя пользователя или пароль', 'danger')
 
@@ -95,6 +102,10 @@ def create_app():
             print(form.errors)
         # Если метод запроса GET, просто отображаем шаблон
         return render_template('registration.html', form=form)
+    
+    @app.route('/dog', methods=['GET', 'POST'])
+    def dog():
+        pass
 
     @app.route('/register_dog', methods=['GET', 'POST'])
     def register_dog():
