@@ -36,7 +36,8 @@ def page_fliper(categories: list = categories, start: int = 1, limit: int = 4) -
                         print(''.join(result))
                         print(f'Ошибка: {te}')
                         exit()
-            sleep(randint(1,2))
+            sleep(randint(2,3))
+        sleep(randint(1,2))
             
 def urls_parser(url_in: str, url_base_site: str) -> list:
     url_from_parse = []
@@ -77,7 +78,7 @@ def page_parser(url_page: str, category: str ='') -> tuple:
             #получаем id отзыва
             id_url = url_page.split('/')[7]
         except AttributeError as ar:
-            return f'Произошла ошибка в блоке BeautifulSoup парсинга: {ar}'
+            return f'Произошла ошибка в блоке BeautifulSoup парсинга: {ar} на {url_page}'
         except Exception as ex:
             return f'Произошла ошибка в функции page_parser: {ex}'
         return id_url, url_page, bank_name, category, short_feedback, response_date, response_city, response_full
