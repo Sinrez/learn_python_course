@@ -49,22 +49,6 @@ def create_app():
         return render_template('profile.html', page_title=title)
 
 
-    # @app.route('/login', methods=['GET', 'POST'])
-    # def login():
-    #     title = "Авторизация"
-    #     form = LoginForm()
-
-    #     if request.method == 'POST' and form.validate():
-    #         user = User.query.filter_by(email=form.email.data).first()
-
-    #         if user and user.check_password(form.password.data):
-    #             flash('Вы успешно авторизовались!', 'success')
-    #             return redirect(url_for('cabinet'))
-    #         else:
-    #             flash('Неправильное имя пользователя или пароль', 'danger')
-
-    #     return render_template('login.html', form=form, title=title)
-
     @app.route('/login', methods=['GET', 'POST'])
     def login():
         title = "Авторизация"
@@ -74,6 +58,8 @@ def create_app():
             user = User.query.filter_by(email=form.email.data).first()
 
             if user and user.check_password(form.password.data):
+                login_user(user)  # авторизация пользователя
+                print(user.get_mail())
                 flash('Вы успешно авторизовались!', 'success')
                 next_page = request.args.get('next') # получаем параметр next из URL
                 if next_page:
@@ -133,10 +119,11 @@ def create_app():
         pass
 
     @app.route('/register_dog', methods=['GET', 'POST'])
+    @login_required
     def register_dog():
         form = DogForm()
         if request.method == 'POST' and form.validate_on_submit():
-            username = request.args.get('username')
+            username = current_user.email
             print(username)
             name_dog = form.name_dog.data
             age_dog = form.age_dog.data

@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 import enum
 from werkzeug.security import check_password_hash
+from flask_login import UserMixin
 
 db = SQLAlchemy()
 
@@ -86,4 +87,15 @@ class User(db.Model):
         def check_password(self, password):
                 return check_password_hash(self.password, password)
 
-
+        def is_active(self):
+                # возвращает True, если пользователь активен, иначе - False
+                return True
+        
+        def get_id(self):
+                return str(self.id_user)
+        
+        def get_mail(self):
+                return str(self.email)
+        
+        def is_authenticated(self):
+                return True

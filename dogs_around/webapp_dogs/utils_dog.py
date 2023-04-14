@@ -55,7 +55,6 @@ def get_or_create_dog(id_dog, name_dog, age_dog, breed_dog, response_date,
                     city_dog=city_dog, foto_dog=foto_dog, voice_dog=voice_dog)
                     user.dogs.append(new_dog)
                     db.session.add(new_dog)
-                    new_dog.users.append(user)
                     db.session.commit()
                 return dog_exists
             except SQLAlchemyError as sq:
