@@ -25,7 +25,7 @@ def create_app():
     db.init_app(app)
     migrate = Migrate(app, db)
 
-    def get_count_from_db(days=20, cat = ''):
+    def get_count_from_db(days=10, cat = ''):
         delta = datetime.timedelta(days)
         now_day = datetime.date.today()
         delta_days = now_day - delta

@@ -1,8 +1,16 @@
 from flask_sqlalchemy import SQLAlchemy
 import enum
 from werkzeug.security import check_password_hash
+from flask_login import UserMixin
 
 db = SQLAlchemy()
+
+def get_user_dogs(email):
+        user = User.query.filter_by(email=email).first()  # ищем пользователя в базе данных по email
+        if user:
+            dogs = user.dogs  # получаем список собак, связанных с данным пользователем
+            print(dogs)
+            return dogs
 
 #для обарботки статусов дружбы accepted, declined, friendship
 class FrendStatusEnum(enum.Enum):
@@ -69,7 +77,7 @@ class Dog(db.Model):
                         friendship.decline_request()
 
         def __repr__(self):
-                return f' Отзыв: {self.name_dog}, {self.breed_dog}, {self.age_dog}'
+                return f' {self.name_dog}, {self.breed_dog}, {self.age_dog}'
 
 
 class User(db.Model):
@@ -86,4 +94,15 @@ class User(db.Model):
         def check_password(self, password):
                 return check_password_hash(self.password, password)
 
-
+        def is_active(self):
+                # возвращает True, если пользователь активен, иначе - False
+                return True
+        
+        def get_id(self):
+                return str(self.id_user)
+        
+        def get_mail(self):
+                return str(self.email)
+        
+        def is_authenticated(self):
+                return True

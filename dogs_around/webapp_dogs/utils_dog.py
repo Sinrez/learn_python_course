@@ -41,17 +41,19 @@ def get_or_create_user(id_user, first_name, last_name, user_name, email, hashed_
         print(f'Ошибка в функции обработки данных пользователя: {ex1}')
 
 def get_or_create_dog(id_dog, name_dog, age_dog, breed_dog, response_date,
-                    city_dog, foto_dog, voice_dog) -> None:
+                    city_dog, foto_dog, voice_dog, username) -> None:
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
     try:
         with app.app_context():
             try:
                 db.init_app(app)
+                user = User.query.filter_by(email=username).first()
                 dog_exists = Dog.query.filter(Dog.id_dog == id_dog).first()
                 if not dog_exists:
                     new_dog = Dog(id_dog=id_dog,name_dog=name_dog, age_dog=age_dog, breed_dog=breed_dog, response_date=response_date,
                     city_dog=city_dog, foto_dog=foto_dog, voice_dog=voice_dog)
+                    user.dogs.append(new_dog)
                     db.session.add(new_dog)
                     db.session.commit()
                 return dog_exists
