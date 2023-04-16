@@ -1,14 +1,14 @@
 # source env_dogs/bin/activate
 # ./run.sh
 
-from flask import Flask, render_template, flash, redirect, url_for,request, session, jsonify
+from flask import Flask, render_template, flash, redirect, url_for,request, session, jsonify, abort
 from datetime import datetime
 from wtforms.validators import DataRequired, Length, ValidationError
 from flask_wtf import FlaskForm, csrf
 from wtforms import StringField, SubmitField
 from webapp_dogs import config
 from werkzeug.security import generate_password_hash
-from webapp_dogs.model import db, User, Dog, get_user_dogs
+from webapp_dogs.model import db, User, Dog, get_user_dogs, Friendship
 from webapp_dogs.forms import RegistrationForm, DogForm , LoginForm
 from webapp_dogs.utils_dog import generate_id_user, get_or_create_user, generate_id_dog, get_or_create_dog
 from flask_login import LoginManager,login_user, logout_user, current_user, login_required
@@ -54,10 +54,46 @@ def create_app():
     def profile_dog(dog_id):
         email = session.get('email')
         dog = Dog.query.filter_by(id_dog=dog_id).first() 
-        print(dog)
+        friend_requests = dog.get_friend_requests()
+        friends = dog.get_friends()
         title = 'Профиль собачки'
-        return render_template('profile_dog.html', page_title=title, dog=dog)
+        return render_template('profile_dog.html', page_title=title, dog=dog, friend_requests= friend_requests, friends= friends)
 
+    @app.route('/accept_friend_request/<string:request_id>', methods=['POST'])
+    def accept_friend_request(request_id):
+        request = Friendship.query.get(request_id)
+        if request:
+            request.accept_request()
+        return redirect(url_for('user_dogs'))
+
+    @app.route('/decline_friend_request/<string:request_id>', methods=['POST'])
+    def decline_friend_request(request_id):
+        request = Friendship.query.get(request_id)
+        if request:
+            request.decline_request()
+        return redirect(url_for('user_dogs'))
+    
+    @app.route('/dogs/<string:dog_id>/add_friend/<string:friend_id>', methods=['POST'])
+    @login_required
+    def add_friend(dog_id, friend_id):
+        dog = Dog.query.get(dog_id)
+        friend = Dog.query.get(friend_id)
+        if not dog or not friend:
+            abort(404)
+
+        if dog == friend:
+            flash('Вы не можете добавить свою собаку в друзья')
+            return redirect(url_for('dog_detail', dog_id=dog.id_dog))
+
+        if dog.has_friend(friend_id):
+            flash('Вы уже друзья с этой собакой')
+            return redirect(url_for('dog_detail', dog_id=dog.id_dog))
+
+        dog.send_friend_request(friend)
+        flash(f'Вы отправили запрос на дружбу {friend.name_dog}')
+        return redirect(url_for('dog_detail', dog_id=dog.id_dog))
+
+    
     @app.route('/login', methods=['GET', 'POST'])
     def login():
         title = "Авторизация"

@@ -153,6 +153,43 @@
       {% endfor %}
       </div>
   </div>
+  <br>
+  <div class="form-container">
+    <h3>Друзья собачек:</h3>
+    <div class="container">
+      {% for friend in friends %}
+      <div class="dog">
+        <div class="details">
+        <p><strong>Кличка:</strong> {{ friend.name_dog }}</p>
+        <p><strong>Порода:</strong> {{ friend.breed_dog }}</p>
+        <p><strong>Возраст:</strong> {{ friend.age_dog }}</p>
+        </div>
+        <div class="buttons dog-buttons">
+        <a href="{{ url_for('profile_dog', dog_id=dog.id_dog) }}" class="button">Профиль</a>
+        </div>
+      </div>
+      {% endfor %}
+      </div>
+  </div>
+<br>
+<div class="form-container">
+  <h3>Заявки в друзья:</h3>
+  <div class="container">
+      {% for request in friend_requests %}
+          <div class="dog">
+              <div class="details">
+                  <p><strong>Кличка:</strong> {{ request.name_dog }}</p>
+                  <p><strong>Порода:</strong> {{ request.breed_dog }}</p>
+                  <p><strong>Возраст:</strong> {{ request.age_dog }}</p>
+              </div>
+              <div class="buttons dog-buttons">
+                  <a href="{{ url_for('accept_request', request_id=request.id) }}" class="button">Принять заявку</a>
+                  <a href="{{ url_for('reject_request', request_id=request.id) }}" class="button">Отклонить заявку</a>
+              </div>
+          </div>
+      {% endfor %}
+  </div>
+</div>
 
  <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
