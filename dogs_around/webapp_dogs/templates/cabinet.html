@@ -163,7 +163,9 @@
 	  </div>
 	  <div class="buttons dog-buttons">
 		<a href="{{ url_for('profile_dog', dog_id=dog.id_dog) }}" class="button">Профиль</a>
-		<a href="{{ url_for('registration') }}" class="button">Подружиться</a>
+		<form action="{{ url_for('accept_friend_request', request_id=dog.id_dog) }}" method="POST">
+      <button type="submit" class="button">Подружиться</button>
+  </form>
 	  </div>
 	</div>
 	{% endfor %}

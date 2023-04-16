@@ -76,8 +76,26 @@ class Dog(db.Model):
                 if friendship:
                         friendship.decline_request()
 
+        def get_friends(self):
+                friend_requests = Friendship.query.filter_by(receiver_dog_id=self.id_dog, status=FrendStatusEnum.accepted.value).all()
+                friends = []
+                for request in friend_requests:
+                        friend = Dog.query.get(request.sender_dog_id)
+                        if friend:
+                                friends.append(friend)
+                return friends
+        
+        def has_friend(self, friend_id):
+                return Friendship.query.filter_by(
+                sender_dog_id=self.id_dog,
+                receiver_dog_id=friend_id,
+                status=FrendStatusEnum.accepted.value
+                ).count() > 0
+        
+
         def __repr__(self):
                 return f' {self.name_dog}, {self.breed_dog}, {self.age_dog}'
+        
 
 
 class User(db.Model):
