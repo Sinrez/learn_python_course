@@ -5,6 +5,13 @@ from flask_login import UserMixin
 
 db = SQLAlchemy()
 
+def get_user_dogs(email):
+        user = User.query.filter_by(email=email).first()  # ищем пользователя в базе данных по email
+        if user:
+            dogs = user.dogs  # получаем список собак, связанных с данным пользователем
+            print(dogs)
+            return dogs
+
 #для обарботки статусов дружбы accepted, declined, friendship
 class FrendStatusEnum(enum.Enum):
     pending = 0
@@ -70,7 +77,7 @@ class Dog(db.Model):
                         friendship.decline_request()
 
         def __repr__(self):
-                return f' Отзыв: {self.name_dog}, {self.breed_dog}, {self.age_dog}'
+                return f' {self.name_dog}, {self.breed_dog}, {self.age_dog}'
 
 
 class User(db.Model):

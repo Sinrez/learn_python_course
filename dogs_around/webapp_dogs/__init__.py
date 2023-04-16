@@ -1,16 +1,15 @@
 # source env_dogs/bin/activate
 # ./run.sh
 
-from flask import Flask, render_template, flash, redirect, url_for,request, session
+from flask import Flask, render_template, flash, redirect, url_for,request, session, jsonify
 from datetime import datetime
 from wtforms.validators import DataRequired, Length, ValidationError
 from flask_wtf import FlaskForm, csrf
 from wtforms import StringField, SubmitField
 from webapp_dogs import config
 from werkzeug.security import generate_password_hash
-from webapp_dogs.model import db, User, Dog
-from webapp_dogs.forms import RegistrationForm, DogForm
-from webapp_dogs.forms import LoginForm
+from webapp_dogs.model import db, User, Dog, get_user_dogs
+from webapp_dogs.forms import RegistrationForm, DogForm , LoginForm
 from webapp_dogs.utils_dog import generate_id_user, get_or_create_user, generate_id_dog, get_or_create_dog
 from flask_login import LoginManager,login_user, logout_user, current_user, login_required
 
@@ -32,27 +31,38 @@ def create_app():
     def index():
         title = 'Собакруг'
         dogs = Dog.query.order_by(Dog.response_date.desc()).all() 
-        print(dogs)
         return render_template('index.html', page_title=title, dogs= dogs)
 
     @app.route("/cabinet")
     def cabinet():
         title = 'Мой профиль'
-        username = session.get('username')
+        email = session.get('email')
         dogs = Dog.query.order_by(Dog.response_date.desc()).all() 
-        return render_template('cabinet.html', page_title=title, dogs= dogs,  username = username)
+        my_dogs = get_user_dogs(email)
+        res_my_dogs = ', '.join([dog.name_dog for dog in my_dogs])
+        return render_template('cabinet.html', page_title=title, dogs= dogs, my_dogs = res_my_dogs, email = email)
     
     @app.route("/profile")
     def profile():
+        email = session.get('email')
+        user = User.query.filter_by(email=email).first() 
         title = 'Мой профиль'
 
-        return render_template('profile.html', page_title=title)
+        return render_template('profile.html', page_title=title, user=user)
 
+    @app.route('/dog/<string:dog_id>')
+    def profile_dog(dog_id):
+        email = session.get('email')
+        dog = Dog.query.filter_by(id_dog=dog_id).first() 
+        print(dog)
+        title = 'Профиль собачки'
+        return render_template('profile_dog.html', page_title=title, dog=dog)
 
     @app.route('/login', methods=['GET', 'POST'])
     def login():
         title = "Авторизация"
         form = LoginForm()
+        email = None 
 
         if request.method == 'POST' and form.validate():
             user = User.query.filter_by(email=form.email.data).first()
@@ -60,6 +70,8 @@ def create_app():
             if user and user.check_password(form.password.data):
                 login_user(user)  # авторизация пользователя
                 print(user.get_mail())
+                email = user.get_mail()
+                session['email'] = email 
                 flash('Вы успешно авторизовались!', 'success')
                 next_page = request.args.get('next') # получаем параметр next из URL
                 if next_page:
@@ -69,7 +81,7 @@ def create_app():
             else:
                 flash('Неправильное имя пользователя или пароль', 'danger')
 
-        return render_template('login.html', form=form, title=title)
+        return render_template('login.html', form=form, title=title, email=email)
     
     @app.route('/logout')
     def logout():
@@ -114,9 +126,16 @@ def create_app():
         # Если метод запроса GET, просто отображаем шаблон
         return render_template('registration.html', form=form)
     
-    @app.route('/dog', methods=['GET'])
-    def dog():
-        pass
+    @app.route('/user_dogs', methods=['GET'])
+    def user_dogs():
+        email = session.get('email') # получаем email пользователя из запроса
+        print(email)
+        user_dogs = get_user_dogs(email)
+        # session[user_dogs] = user_dogs
+        if user_dogs:
+            return render_template('user_dogs.html', dogs= user_dogs,  email = email)
+        else:
+            return {'message': 'User not found'}, 404  # возвращаем сообщение об ошибке, если пользователь не найден
 
     @app.route('/register_dog', methods=['GET', 'POST'])
     @login_required

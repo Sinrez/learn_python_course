@@ -26,12 +26,14 @@
             {% endif %}
           {% endwith %}   
             <div class="card mb-3">
-              {% if user %}
+              {% if dog %}
               <div class="card-body">
-                <p>Имя: {{ user.first_name }}</p>
-                <p>Фамилия: {{ user.last_name }}</p>
-                <p>Ник: {{ user.user_name }}</p>
-                <p>Почта: {{ user.email }}</p>
+                <p>Кличка: {{ dog.name_dog }}</p>
+                <p>Возраст собаки: {{ dog.age_dog }}</p>
+                <p>Порода: {{ dog.breed_dog }}</p>
+                <p>Дата регистрации: {{ dog.response_date.strftime('%d.%m.%Y') }}</p>
+                <p>Город: {{ dog.city_dog }}</p>
+                <p>Фото или ссылка на фото: {{ dog.foto_dog }}</p>
               </div>
               {% endif %}
             </div>

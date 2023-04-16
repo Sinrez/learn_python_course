@@ -126,10 +126,6 @@
   margin: 1 90px;
 }
 
-
-</style>
-
-
 </style>
 </head>
 <body>
@@ -142,14 +138,16 @@
       </ul>
     {% endif %}
   {% endwith %}
-  <li>{{ username }}</li>
+  <li>Пользователь: {{ email }}</li>
+  <li>Мои собачки: {{ my_dogs }}</li>
   <div class="header">
 	<img src="{{ url_for('static', filename='logo.png') }}" alt="Собакруг">
 	<div class="buttons login-buttons">
 		<a href="{{ url_for('logout') }}" class="button">Выйти</a>
-		<a href="{{ url_for('cabinet') }}" class="button">Мой профиль</a>
+		<a href="{{ url_for('profile') }}" class="button">Мой профиль</a>
 		<a href="{{ url_for('register_dog') }}" class="button">Регистрация собаки</a>
-		<a href="{{ url_for('registration') }}" class="button">Профиль собаки</a>
+		<a href="{{ url_for('user_dogs') }}" class="button">Мои собачки</a>
+    <a href="{{ url_for('cabinet') }}" class="button">Собачьи друзья</a>
 	</div>
 </div>
 <div class="container">
@@ -164,7 +162,7 @@
 		<p><strong>Возраст:</strong> {{ dog.age_dog }}</p>
 	  </div>
 	  <div class="buttons dog-buttons">
-		<a href="{{ url_for('registration') }}" class="button">Профиль</a>
+		<a href="{{ url_for('profile_dog', dog_id=dog.id_dog) }}" class="button">Профиль</a>
 		<a href="{{ url_for('registration') }}" class="button">Подружиться</a>
 	  </div>
 	</div>
