@@ -8,16 +8,16 @@ db = SQLAlchemy()
 def get_user_dogs(email):
         user = User.query.filter_by(email=email).first()  # ищем пользователя в базе данных по email
         if user:
-            dogs = user.dogs  # получаем список собак, связанных с данным пользователем
-            print(dogs)
-            return dogs
+                dogs = user.dogs  # получаем список собак, связанных с данным пользователем
+                print(dogs)
+                return dogs
 
 #для обарботки статусов дружбы accepted, declined, friendship
 class FrendStatusEnum(enum.Enum):
-    pending = 0
-    accepted = 1
-    friendship = 2
-    declined = 3
+        pending = 0
+        accepted = 1
+        friendship = 2
+        declined = 3
 
 # таблица для связи многие-ко многим владелец-собака, так как у собаки может быть более 1 владельца
 association_table = db.Table('association',
@@ -25,7 +25,7 @@ association_table = db.Table('association',
         db.Column('dog_id', db.String, db.ForeignKey('dog.id_dog'))
 )
 
-# а этот класс для отображаения "дружбы" между собаками
+# а этот класс для отображаения "дружбы" между собакой и собакой/собаками пользователя через пользовтеля класс User
 # status может принимать варианты accepted, declined, friendship - хранятся в config.py
 class Friendship(db.Model):
         id = db.Column(db.Integer, primary_key=True)
@@ -40,6 +40,14 @@ class Friendship(db.Model):
         def decline_request(self):
                 self.status = FrendStatusEnum.declined.value
                 db.session.commit()
+        
+        @classmethod
+        def add_friendship(cls, sender_dog, receiver_user):
+                # Создаем новый объект Friendship
+                friendship = cls(sender_dog_id=sender_dog.id_dog, receiver_dog_id=receiver_user.dogs[0].id_dog)
+                # Добавляем его в сессию для сохранения в базе данных
+                db.session.add(friendship)
+                db.session.commit()
 
 
 class Dog(db.Model):
@@ -53,48 +61,41 @@ class Dog(db.Model):
         voice_dog = db.Column(db.String, nullable=True)
         users = db.relationship('User', secondary=association_table, back_populates='dogs')
 
-        def get_friend_requests(self):
-                #для получения списка всех запросов на дружбу для конкретной собаки
-                friend_requests = Friendship.query.filter_by(receiver_dog_id=self.id_dog, status=FrendStatusEnum.pending.value).all()
-                return friend_requests
-        
-        def send_friend_request(self, other_dog):
-                #для получения списка всех запросов на дружбу для конкретной собаки
-                friendship = Friendship(sender_dog_id=self.id_dog, receiver_dog_id=other_dog.id_dog)
+        def add_friend_request(self, user_id):
+                friendship = Friendship(sender_dog_id=self.id_dog, receiver_dog_id=user_id)
                 db.session.add(friendship)
                 db.session.commit()
 
-        #Эти методы будут находить соответствующий запрос 
-        # на дружбу между двумя собаками и менять его статус на "подтвержденный" или "отклоненный"
-        def accept_friend_request(self, other_dog):
-                friendship = Friendship.query.filter_by(sender_dog_id=other_dog.id_dog, receiver_dog_id=self.id_dog).first()
-                if friendship:
-                        friendship.accept_request()
-
-        def decline_friend_request(self, other_dog):
-                friendship = Friendship.query.filter_by(sender_dog_id=other_dog.id_dog, receiver_dog_id=self.id_dog).first()
-                if friendship:
-                        friendship.decline_request()
-
         def get_friends(self):
-                friend_requests = Friendship.query.filter_by(receiver_dog_id=self.id_dog, status=FrendStatusEnum.accepted.value).all()
                 friends = []
-                for request in friend_requests:
-                        friend = Dog.query.get(request.sender_dog_id)
-                        if friend:
-                                friends.append(friend)
-                return friends
-        
-        def has_friend(self, friend_id):
-                return Friendship.query.filter_by(
-                sender_dog_id=self.id_dog,
-                receiver_dog_id=friend_id,
-                status=FrendStatusEnum.accepted.value
-                ).count() > 0
-        
+                friendships = Friendship.query.filter_by(status=FrendStatusEnum.accepted.value).all()
+                for friendship in friendships:
+                        if friendship.sender_dog_id == self.id_dog:
+                                friend = Dog.query.filter_by(id_dog=friendship.receiver_dog_id).first()
+                                if friend:
+                                        friends.append(friend)
+                        elif friendship.receiver_dog_id == self.id_dog:
+                                friend = Dog.query.filter_by(id_dog=friendship.sender_dog_id).first()
+                                if friend:
+                                        friends.append(friend)
+                        return friends
+
+        def get_friend_requests(self):
+                friend_requests = []
+                requests_from_user = Friendship.query.filter_by(receiver_dog_id=self.id_dog, status=FrendStatusEnum.pending.value).all()
+                print(requests_from_user)
+                for req in requests_from_user:
+                        print(f'req.sender_dog_id: {req.sender_dog_id}')
+                        dog = Dog.query.filter_by(id_dog=req.sender_dog_id).first()
+                        print(f'DOG {dog}')
+                        if dog:
+                                friend_requests.append(dog)
+                        print(f'Список DOG {friend_requests}')
+                return friend_requests
+
 
         def __repr__(self):
-                return f' {self.name_dog}, {self.breed_dog}, {self.age_dog}'
+                return f'{self.id_dog}, {self.name_dog}, {self.breed_dog}, {self.age_dog}'
         
 
 

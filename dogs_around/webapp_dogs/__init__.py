@@ -8,7 +8,7 @@ from flask_wtf import FlaskForm, csrf
 from wtforms import StringField, SubmitField
 from webapp_dogs import config
 from werkzeug.security import generate_password_hash
-from webapp_dogs.model import db, User, Dog, get_user_dogs, Friendship
+from webapp_dogs.model import db, User, Dog, get_user_dogs, Friendship, FrendStatusEnum
 from webapp_dogs.forms import RegistrationForm, DogForm , LoginForm
 from webapp_dogs.utils_dog import generate_id_user, get_or_create_user, generate_id_dog, get_or_create_dog
 from flask_login import LoginManager,login_user, logout_user, current_user, login_required
@@ -38,6 +38,7 @@ def create_app():
         title = 'Мой профиль'
         email = session.get('email')
         dogs = Dog.query.order_by(Dog.response_date.desc()).all() 
+        print(dogs)
         my_dogs = get_user_dogs(email)
         res_my_dogs = ', '.join([dog.name_dog for dog in my_dogs])
         return render_template('cabinet.html', page_title=title, dogs= dogs, my_dogs = res_my_dogs, email = email)
@@ -54,44 +55,42 @@ def create_app():
     def profile_dog(dog_id):
         email = session.get('email')
         dog = Dog.query.filter_by(id_dog=dog_id).first() 
-        friend_requests = dog.get_friend_requests()
-        friends = dog.get_friends()
         title = 'Профиль собачки'
-        return render_template('profile_dog.html', page_title=title, dog=dog, friend_requests= friend_requests, friends= friends)
+        return render_template('profile_dog.html', page_title=title, dog=dog)
 
-    @app.route('/accept_friend_request/<string:request_id>', methods=['POST'])
-    def accept_friend_request(request_id):
-        request = Friendship.query.get(request_id)
+    @app.route('/add_friend/<string:dog_id>', methods=['POST'])
+    @login_required
+    def add_friend(dog_id):
+        # user_id = session.get('user_id')
+        email = session.get('email')
+        my_dog = get_user_dogs(email)[0]
+        dog = Dog.query.get(dog_id)
+        if dog is None:
+            abort(404)
+        print(current_user.id_user)
+        print(my_dog)
+        if my_dog:
+            friendship_request = Friendship(sender_dog_id=my_dog.id_dog, receiver_dog_id=dog_id)
+            db.session.add(friendship_request)
+            db.session.commit()
+            flash(f'Вы отправили запрос на дружбу {dog.name_dog}!', 'success')
+        else:
+            flash('Произошла ошибка! Попробуйте еще раз.', 'danger')
+        return redirect(url_for('user_dogs'))
+    
+    @app.route('/accept_request/<string:id_dog>')
+    def accept_request(id_dog):
+        request = Friendship.query.filter_by(sender_dog_id=id_dog, status=FrendStatusEnum.pending.value).first()
         if request:
             request.accept_request()
         return redirect(url_for('user_dogs'))
 
-    @app.route('/decline_friend_request/<string:request_id>', methods=['POST'])
-    def decline_friend_request(request_id):
-        request = Friendship.query.get(request_id)
+    @app.route('/reject_request/<string:id_dog>')
+    def reject_request(id_dog):
+        request = Friendship.query.filter_by(sender_dog_id=id_dog, status=FrendStatusEnum.pending.value).first()
         if request:
             request.decline_request()
         return redirect(url_for('user_dogs'))
-    
-    @app.route('/dogs/<string:dog_id>/add_friend/<string:friend_id>', methods=['POST'])
-    @login_required
-    def add_friend(dog_id, friend_id):
-        dog = Dog.query.get(dog_id)
-        friend = Dog.query.get(friend_id)
-        if not dog or not friend:
-            abort(404)
-
-        if dog == friend:
-            flash('Вы не можете добавить свою собаку в друзья')
-            return redirect(url_for('dog_detail', dog_id=dog.id_dog))
-
-        if dog.has_friend(friend_id):
-            flash('Вы уже друзья с этой собакой')
-            return redirect(url_for('dog_detail', dog_id=dog.id_dog))
-
-        dog.send_friend_request(friend)
-        flash(f'Вы отправили запрос на дружбу {friend.name_dog}')
-        return redirect(url_for('dog_detail', dog_id=dog.id_dog))
 
     
     @app.route('/login', methods=['GET', 'POST'])
@@ -102,12 +101,13 @@ def create_app():
 
         if request.method == 'POST' and form.validate():
             user = User.query.filter_by(email=form.email.data).first()
-
             if user and user.check_password(form.password.data):
                 login_user(user)  # авторизация пользователя
                 print(user.get_mail())
                 email = user.get_mail()
                 session['email'] = email 
+                user_id = user.get_id()
+                session['user_id'] = user_id 
                 flash('Вы успешно авторизовались!', 'success')
                 next_page = request.args.get('next') # получаем параметр next из URL
                 if next_page:
@@ -167,9 +167,13 @@ def create_app():
         email = session.get('email') # получаем email пользователя из запроса
         print(email)
         user_dogs = get_user_dogs(email)
-        # session[user_dogs] = user_dogs
+        print(user_dogs)
+        friend_requests = [dog.get_friend_requests() for dog in user_dogs][0]
+        print(f'Список запросов в друзья: {friend_requests}')
+        friends = [dog.get_friends() for dog in user_dogs][0]
+        print(friends)
         if user_dogs:
-            return render_template('user_dogs.html', dogs= user_dogs,  email = email)
+            return render_template('user_dogs.html', dogs= user_dogs,  email = email, friend_requests = friend_requests, friends= friends)
         else:
             return {'message': 'User not found'}, 404  # возвращаем сообщение об ошибке, если пользователь не найден
 
