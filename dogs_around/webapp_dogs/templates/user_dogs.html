@@ -133,6 +133,15 @@
       </style>
 </head>
 <body>
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class="flashes">
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
   <div class="form-container">
     <h2>Мои собачки:</h2>
     <div class="container">
@@ -165,13 +174,14 @@
         <p><strong>Возраст:</strong> {{ friend.age_dog }}</p>
         </div>
         <div class="buttons dog-buttons">
-        <a href="{{ url_for('profile_dog', dog_id=dog.id_dog) }}" class="button">Профиль</a>
+        <a href="{{ url_for('profile_dog', dog_id=friend.id_dog) }}" class="button">Профиль</a>
         </div>
       </div>
       {% endfor %}
       </div>
   </div>
 <br>
+
 <div class="form-container">
   <h3>Заявки в друзья:</h3>
   <div class="container">
@@ -183,8 +193,8 @@
                   <p><strong>Возраст:</strong> {{ request.age_dog }}</p>
               </div>
               <div class="buttons dog-buttons">
-                  <a href="{{ url_for('accept_request', request_id=request.id) }}" class="button">Принять заявку</a>
-                  <a href="{{ url_for('reject_request', request_id=request.id) }}" class="button">Отклонить заявку</a>
+                <a href="{{ url_for('accept_request', id_dog=request.id_dog) }}" class="button">Принять заявку</a>
+                <a href="{{ url_for('reject_request', id_dog=request.id_dog) }}" class="button">Отклонить заявку</a>
               </div>
           </div>
       {% endfor %}
