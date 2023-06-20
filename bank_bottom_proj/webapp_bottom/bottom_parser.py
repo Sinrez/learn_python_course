@@ -13,10 +13,10 @@ from utils import get_url, save_response
 from config import categories
 from check_resource import check_url
 
-def page_fliper(categories: list = categories, start: int = 1, limit: int = 4) -> None:
+def page_fliper(categories: list = categories, start: int = 1, limit: int = 3) -> None:
     # limit = 150
     #1440 - c начала 22
-    # limit = 4 # !!!cтавим на период теста чтобы не дудосить!!!
+    # limit = 3 или 4 # !!!cтавим на период теста чтобы не дудосить!!!
     url_base_site = 'https://www.banki.ru'
     check_url(url_base_site)
     for cat in categories:
